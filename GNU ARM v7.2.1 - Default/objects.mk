@@ -1,0 +1,8 @@
+################################################################################
+# Automatically-generated file. Do not edit!
+################################################################################
+
+USER_OBJS := C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5//protocol/thread/build/thread-stack-cortexm3-gcc-mgm12-rail/thread-stack.a C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5//platform/radio/rail_lib/autogen/librail_release/librail_module_efr32xg12_gcc_release.a C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5//platform/radio/rail_lib/autogen/librail_release/librail_config_mgm12p32f1024ge_gcc.a C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5//protocol/thread/build/mbedtls-library-cortexm3-gcc-mgm12-rail/mbedtls-library.a C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5//protocol/thread/build/dhcp-library-cortexm3-gcc-mgm12-rail/dhcp-library.a C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5//protocol/thread/build/sim-eeprom2-to-nvm3-upgrade-stub-library-cortexm3-gcc-mgm12-rail/sim-eeprom2-to-nvm3-upgrade-stub-library.a C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5//protocol/thread/build/mfglib-library-cortexm3-gcc-mgm12-rail/mfglib-library.a C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5//platform/emdrv/nvm3/lib/libnvm3_CM4_gcc.a C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5//protocol/thread/build/hal-library-cortexm3-gcc-mgm12-rail/hal-library.a
+
+LIBS := -lm
+

@@ -1,0 +1,1 @@
+"$4/jre/bin/java" -jar "$4/../../../.config/SimplicityStudio/v4/python/jython.jar"  "$(dirname "$0")/AQM-TestV1-prebuild.py"

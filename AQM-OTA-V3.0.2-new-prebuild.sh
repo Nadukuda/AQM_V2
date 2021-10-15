@@ -1,0 +1,1 @@
+"$4/jre/bin/java" -jar "$4/../../../.config/SimplicityStudio/v4/python/jython.jar"  "$(dirname "$0")/AQM-OTA-V3.0.2-new-prebuild.py"
