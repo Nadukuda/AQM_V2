@@ -52,10 +52,10 @@ extern EmberEventControl aqmBufferEventControl;
 
 
 const EmberEventData emAppEvents[] = {
-  {&stateEventControl, stateEventHandler},
-  {&emZclOtaBootloadClientEventControl, emZclOtaBootloadClientEventHandler},
-  {&emZclOtaBootloadStorageEepromEraseEventControl, emZclOtaBootloadStorageEepromEraseEventHandler},
-  {&emZclEzModeEventControl, emZclEzModeEventHandler},
+//  {&stateEventControl, stateEventHandler},
+//  {&emZclOtaBootloadClientEventControl, emZclOtaBootloadClientEventHandler},
+//  {&emZclOtaBootloadStorageEepromEraseEventControl, emZclOtaBootloadStorageEepromEraseEventHandler},
+//  {&emZclEzModeEventControl, emZclEzModeEventHandler},
   //  {&networkWatchdogEventControl, networkWatchdogEventHandler},
   {&resetEventControl, resetEventHandler},
   {&si7021EventControl, si7021EventHandler},

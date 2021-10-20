@@ -17,6 +17,9 @@
 #include "Data_Protocol/VMN_globals.h"
 #include "Data_Protocol/VMN_definitions.h"
 #include "VMN/Data_Queue/Queue.h"
+#include "stdio.h"
+#include "stdlib.h"
+#include "stack/include/ember.h"
 
 #define NOVA_AQM // global AQM
 #define SDS011 // PM2.5 & PM10
@@ -70,8 +73,13 @@ static void setNextStateWithDelay(uint8_t nextState, uint32_t delayMs);
 #define repeatStateWithDelay(delayMs)	setNextStateWithDelay(aqmMasterState, (delayMs))
 
 uint8_t PM_datasend_control=0;
-uint8_t sensorcount = 1;
+
 extern void ADCDataPackaging(uint8_t sensorcount);
+
+
+extern uint8_t sensor_countbuffer[4];   //please update this buffer based on the sensors connected if connected value as 1 , Not connected = 0
+extern uint8_t  firstpopulatedsensor;
+extern uint8_t sensorcount;
 
 uint8_t sensor_notconnected(uint8_t sensornum)
 {
@@ -129,12 +137,12 @@ void aqmMasterEventHandler(void){
 
 		case ENQUEUE_DATA:
 //			air_quality_temp.index = measurement_index++;
-			if(PM_datasend_control == 0) {
+			if(PM_datasend_control == 0) { //check this one which is added by shravantghi to control the PM data send
 				VMN_rtccUpdate();
+			}
 	//			date_time = VMN_getDateTime();
 				air_quality_temp.time = VMN_rtccGetTime();
 				air_quality_temp.date = VMN_rtccGetDate();
-			}
 				Enqueue(air_quality_temp);
 		break;
 
@@ -174,23 +182,32 @@ void aqmMasterEventHandler(void){
 			gas_payload[73] = air_quality_temp.date;
 			if(sensorcount <=  firstpopulatedsensor ) {
 				sensorcount = firstpopulatedsensor;
-				switch(sensorcount) {
-					case 1:
-						gas_payload[74] = (sensor_connected(CONNECTED_S1) | 0x00); break;
-					case 2:
-						gas_payload[74] = (sensor_connected(CONNECTED_S2) | 0x01); break;
-					case 3:
-						gas_payload[74] = (sensor_connected(CONNECTED_S3) | 0x02); break;
-					case 4:
-						gas_payload[74] = (sensor_connected(CONNECTED_S4) | 0x03); break;
+				emberAfAppPrintln("firstpopulatedsensor entry %d", firstpopulatedsensor);
+				switch(sensorcount){
+				emberAfAppPrintln("sensorcount = %d entry", sensorcount);
+				//if (sensorcount == 1)
+					case SENSOR1:
+						gas_payload[74] = ((CONNECTED_S1 << 4)| 0x00); break;
+					case SENSOR2:
+			//	else if (sensorcount == 2)
+						gas_payload[74] = ((CONNECTED_S2 << 4) | 0x01); break;
+					case SENSOR3:
+				//else if (sensorcount == 3)
+						gas_payload[74] = ((CONNECTED_S3 << 4) | 0x02); break;
+				//else
+					case SENSOR4:
+						gas_payload[74] = ((CONNECTED_S4 << 4) | 0x03); break;
 			   }
 				VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
-				emberAfAppPrintln("Sensor ID byte %d", gas_payload[74]);
+				emberAfAppPrintln("Sensor ID byte1 %x", gas_payload[74]);
 				sensorcount++;
 			}
+		//	for(;sensorcount<=4; sensorcount++) {
 			if(sensorcount <= 4) {
 				uint8_t sensor_type = sensor_countbuffer[sensorcount - 1];
-				switch(sensor_type) {
+				switch(sensor_type)
+			//	if(sensor_type == 1)
+				{
 			/*	case 0: //not connected  15/10/2021 Tim told me that if No sensor then No need to send the payload
 					switch(sensorcount + 1) {
 						 case 1: gas_payload[74] = (sensor_notconnected(CONNECTED_S1) | 0x00); break;
@@ -203,39 +220,53 @@ void aqmMasterEventHandler(void){
 				case 1:  //connected
 					switch(sensorcount) {
 					/*	case 1:
+						//	ADCDataPackaging(sensorcount);
+						//	setNextState(ENQUEUE_DATA);
+							gas_payload[74] = (CONNECTED_S1 << 4 | 0x00);
+							VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
+							sensorcount++;
 							ADCDataPackaging(sensorcount);
 							setNextState(ENQUEUE_DATA);
-							gas_payload[74] = (sensor_connected(CONNECTED_S1) | 0x00);
-							VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
 							break;*/
-						case 2:
+						case SENSOR2:
+							emberAfAppPrintln("sensor_countbuffer 2");
+					//if(sensorcount == 2)
+					{
 							ADCDataPackaging(sensorcount);
 							setNextState(ENQUEUE_DATA);
-							gas_payload[74] = (sensor_connected(CONNECTED_S2) | 0x01);
+							gas_payload[74] = (CONNECTED_S2 << 4 | 0x01);
 							VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
+					}
 							break;
-						case 3:
+						case SENSOR3:
+					//else if(sensorcount == 3)
+					{
 							ADCDataPackaging(sensorcount);
 							setNextState(ENQUEUE_DATA);
-							gas_payload[74] = (sensor_connected(CONNECTED_S3) | 0x02);
+							gas_payload[74] = (CONNECTED_S3 << 4 | 0x02);
 							VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
+					}
 							break;
-						case 4:
+						case SENSOR4:
+					//else
+					{
 							ADCDataPackaging(sensorcount);
 							setNextState(ENQUEUE_DATA);
-							gas_payload[74] = (sensor_connected(CONNECTED_S4) | 0x03);
+							gas_payload[74] = (CONNECTED_S4 << 4 | 0x03);
 							VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
+					}
 							break;
 					}
 
 				break;
 			  }
 				sensorcount++;
-				emberAfAppPrintln("Sensor ID byte %d", gas_payload[74]);
+				emberAfAppPrintln("Sensor ID byte %x", gas_payload[74]);
 			}
 			if(sensorcount > 4) {
-				PM_datasend_control = 1;
+				PM_datasend_control = 0;
 				sensorcount = 1;
+				setNextState(PURGE);
 			}
 			//Live GAS DATA send through
 		/*	switch(SENSOR_SELECT_FLAG) {
@@ -256,9 +287,7 @@ void aqmMasterEventHandler(void){
 			else
 			VMN_payloadPackager(&global_server, gas_payload, 74, DAT, 0x0029); //added on 20/09/2021  - NO2 / O3 standard version sends raw temp / hum measurements, works on si7021 or htu21d
 */
-			setNextState(PURGE);
 		break;
-
 		case PURGE:
 			if(!low_power_mode && purge_limit > 0){
 				if(measurement_count >= purge_limit){

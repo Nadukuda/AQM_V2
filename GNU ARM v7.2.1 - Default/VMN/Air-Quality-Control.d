@@ -170,7 +170,8 @@ VMN/Air-Quality-Control.o: ../VMN/Air-Quality-Control.c \
  c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\protocol\thread\app\thread\plugin\debug-print\debug-print.h \
  C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/Data_Protocol/VMN_globals.h \
  C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/Data_Protocol/VMN_definitions.h \
- C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/VMN/Data_Queue/Queue.h
+ C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/VMN/Data_Queue/Queue.h \
+ c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\protocol\thread\stack\include\ember.h
 
 C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5/platform/base/hal/micro/cortexm3/compiler/gcc.h:
 
@@ -515,3 +516,5 @@ C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/Data_P
 C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/Data_Protocol/VMN_definitions.h:
 
 C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/VMN/Data_Queue/Queue.h:
+
+c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\protocol\thread\stack\include\ember.h:

@@ -25,6 +25,9 @@
 #endif
 #include <Data_Protocol/VMN_definitions.h>
 #include <Data_Protocol/VMN_globals.h>
+#include "stdio.h"
+#include "stdlib.h"
+#include "stack/include/ember.h"
 
 void databuffer_empty(uint8_t buffer[]);
 static void ADCInitialise(uint8_t adc_select_in, uint8_t sensor_number);
@@ -48,10 +51,19 @@ uint32_t setGasPostPurgeDelay(long);
 //Using 2 MCP3424
 //Left side address 0x68
 //right side address 0x6C
-
+//ADC0 = right side
+//ADC1 = left side 1101 0000 = D0
+//110  1 1000 =68
+//110 1001 69
+//110 1010 6a
+//110 1011 6b
+//110 1100 6c
+//110 1101 6d
+//110 1110 6e
+//110 1111 6f
 enum{
-	MCP3424_0_WRITE_ADDRESS			=		0XD0,
-	MCP3424_0_READ_ADDRESS			=		0XD1,
+	MCP3424_0_WRITE_ADDRESS			=		0XD0, //D0 68 D2 69 D4 6a D6 D8 Da dc de
+	MCP3424_0_READ_ADDRESS			=		0XD1, //D1 D3 D5 D7 D9 db dd df
 	MCP3424_1_WRITE_ADDRESS			=		0XD8,
 	MCP3424_1_READ_ADDRESS			=		0XD9,
 	//sensor 1 and 3 uses these configs  (O3 and SO2)
@@ -91,10 +103,10 @@ enum{
 
 };
 
-uint8_t channel_config_register1 = channel_config_register1_G1;
-uint8_t channel_config_register2 = channel_config_register2_G1;
-uint8_t channel_1_check_byte;
-uint8_t channel_2_check_byte;
+uint8_t channel_config_register1 = channel_config_register1_G4;
+uint8_t channel_config_register2 = channel_config_register2_G4;
+uint8_t channel_1_check_byte = CHANNEL_1_CHECK_BYTE_G4;
+uint8_t channel_2_check_byte = CHANNEL_2_CHECK_BYTE_G4;
 //uint8_t gain = 0x08;
 uint8_t sample_rate = 0x12; // decimal 18
 
@@ -167,15 +179,22 @@ static uint8_t adc1_ch3_data_buffer[4]; //bcause 18bit will give 3bytes of data 
 static uint8_t adc1_ch4_data_buffer[4];
 
 uint8_t channel_call_flag = 0;
-uint8_t adc0_measurementskip_sensor1flag = 0; // this flag is set when there is no sensor adc0_measurementskip_sensor2flag
-uint8_t adc0_measurementskip_sensor2flag = 0; // this flag is set when there is no sensor
-uint8_t adc1_measurementskip_sensor3flag = 0; // this flag is set when there is no sensor
-uint8_t adc1_measurementskip_sensor4flag = 0; // this flag is set when there is no sensor
-uint8_t loop_entry_count = 0;
+uint8_t adc0_ch1measurementskip = 0; // this flag is set when there is no sensor adc0_measurementskip_sensor2flag
+//uint8_t adc0_ch2measurementskip = 0; // this flag is set when there is no sensor
+uint8_t adc0_ch3measurementskip = 0; // this flag is set when there is no sensor
+//uint8_t adc0_ch4measurementskip = 0; // this flag is set when there is no sensor
+uint8_t adc1_ch1measurementskip = 0; // this flag is set when there is no sensor adc0_measurementskip_sensor2flag
+//uint8_t adc1_ch2measurementskip = 0; // this flag is set when there is no sensor
+uint8_t adc1_ch3measurementskip = 0; // this flag is set when there is no sensor
+//uint8_t adc1_ch4measurementskip = 0; // this flag is set when there is no sensor
+
 static uint8_t adc0_sensor_select = 1; //added newly on 06/10/2021 to selecr the sensor
 static uint8_t adc1_sensor_select = 3; //added newly on 06/10/2021 to selecr the sensor
 static uint8_t gas_measurement_fanspinflag = 1;
 
+uint8_t sensor_countbuffer[4] = {0, 0,0,0};   //please update this buffer based on the sensors connected if connected value as 1 , Not connected = 0
+uint8_t  firstpopulatedsensor = 0;
+uint8_t sensorcount = 0;
 
 /**************  END ***************/
 
@@ -221,8 +240,8 @@ static void setNextStateWithDelay(uint8_t nextState, uint32_t delayMs);
 
 void gasSensorEventHandler(void){
 	emberEventControlSetInactive(gasSensorEventControl);
-	uint8_t adc_presence_check1 = 0;
-	uint8_t adc_presence_check2 = 0;
+	uint8_t adc_presence_check1 = 2;
+	uint8_t adc_presence_check2 = 2;
 	switch(gasSensorState) {
 
 	case INACTIVE:
@@ -231,14 +250,15 @@ void gasSensorEventHandler(void){
 
 	case INITIAL:
 	//	ADCInitialise(adc_select,sensor_select); //initially adc _Select=0 and sensor_select=1
-		ADCInitialise(ADC0,adc0_sensor_select); //initially adc _Select=0 and sensor_select=1
-		ADCInitialise(ADC1,adc1_sensor_select); //initially adc _Select=0 and sensor_select=1
-		if(gas_measurement_fanspinflag != 1) {// This if enables the measurements after F
+		ADCInitialise(0,adc0_sensor_select); //initially adc _Select=0 and sensor_select=1
+		ADCInitialise(1,adc1_sensor_select); //initially adc _Select=0 and sensor_select=1
+		if(gas_measurement_fanspinflag == 2) {// This if enables the measurements after F
+			emberAfAppPrintln("after fan spin");
 			setFanSpeed(0); //Fan init
 			if(!low_power_mode){
-				Solenoid(1,SOLENOID_OPEN);  // 1 open 0 close solenoid
+				Solenoid(1,1);  // 1 open 0 close solenoid
 			} else if(initial_flag == false){
-				Solenoid(1,SOLENOID_OPEN);
+				Solenoid(1,1);
 				initial_flag = true;
 			}
 	//		setFanSpeed(100); // spin fan to refresh chamber
@@ -246,16 +266,19 @@ void gasSensorEventHandler(void){
 	//		setNextStateWithDelay(PURGE_CHAMBER, 3000);
 			if(count == 0) {// && adc_select == 0){
 				setNextState(PURGE_CHAMBER);
+				emberAfAppPrintln("PURGE_CHAMBER");
 			} else {
 				setNextState(REQUEST_MEASUREMENT1);
 			}
+			gas_measurement_fanspinflag = 3;
 		} else
-			setNextState(REQUEST_MEASUREMENT1);
+			setNextStateWithDelay(REQUEST_MEASUREMENT1,50);
 
 		break;
 
 
 	case PURGE_CHAMBER:
+		emberAfAppPrintln("PURGEentry");
 		setFanSpeed(purge_fan_speed); //running fan for sometime
 		setNextStateWithDelay(POST_PURGE_DELAY,purge_duration);
 		break;
@@ -267,19 +290,17 @@ void gasSensorEventHandler(void){
 
 
 	case REQUEST_MEASUREMENT1:
-//		if(count >= 5){
-//			setFanSpeed(0);
-//			fan_flag = 0;
-//		}
-
-//		emberAfAppPrintln("REQUEST_MEASUREMENT1");
  //here think about how to request for ADC's based on sensor
 		//1st sensor and 3rd ch1 & ch2,   2 and 4th sensors ch3, ch4
+		emberAfAppPrintln("REQUEST_MEASUREMENT1");
 		if(channel_call_flag == 1) {
 			ADCRequestCh3(ADC0); //requesting channel 3 of ADC0
-			ADCRequestCh3(ADC1);////requesting channel 3 of ADC1
+			emberAfAppPrintln("ch3");
+		//	ADCRequestCh3(ADC1);////requesting channel 3 of ADC1
 		} else {
+
 			ADCRequestCh1(ADC0); //requesting channel 1 of ADC0
+			emberAfAppPrintln("ch1");
 			ADCRequestCh1(ADC1); //requesting channel 1 of ADC1
 		}
 		setNextStateWithDelay(FETCH_MEASUREMENT1,500);
@@ -287,100 +308,117 @@ void gasSensorEventHandler(void){
 
 
 	case FETCH_MEASUREMENT1: //In sensor_countbuffer 1->connected 0->not connected
+		emberAfAppPrintln("FETCH_MEASUREMENT1");
 		if(channel_call_flag == 1){ //If sensor is exist read the channel
-			adc_presence_check1 = ADCReadChannelThree(ADC0);
-			adc_presence_check2 = ADCReadChannelThree(ADC1);
-			if((adc_presence_check1 == 1) && (adc_presence_check2 == 1)) {  //if there is no sensor2 and sensor4
-				adc0_sensor_select = SENSOR2; // adc0,adc1 sensor select flags are set to 2 and 4 to skip measurement cycle for sensor 2 and 4
-				adc1_sensor_select = SENSOR4;
-				adc0_measurementskip_sensor2flag = adc1_measurementskip_sensor4flag = 1;
-				channel_call_flag = 0;
-				sensor_countbuffer[3] = 0;
-				sensor_countbuffer[1] = 0;
-				setNextState(TRANSMIT); //go to transmit
-			} else if(adc_presence_check1 == 1) {
-				adc0_measurementskip_sensor2flag = 1; //means there is no sensor2
-				sensor_countbuffer[3] = 1;
-				sensor_countbuffer[1] = 0;
-				setNextState(REQUEST_MEASUREMENT2); //go and take measuremetn for sensor 4
-			} else if(adc_presence_check2 == 1){
-				adc1_measurementskip_sensor4flag = 1; //means there is no sensor42
-				sensor_countbuffer[1] = 1;
-				sensor_countbuffer[3] = 0;
-				setNextState(REQUEST_MEASUREMENT2); //go and take measurement for sensor
-			} else {
-				sensor_countbuffer[1] = 1; //sensor2
-				sensor_countbuffer[3] = 1; //sensor4
-				setNextState(REQUEST_MEASUREMENT2); //if 2 sensors are available to measure
-			}
+					adc_presence_check1 = ADCReadChannelThree(ADC0);
 
-		} else { // Read the channel, if there is no response just loop back with a delay of 1s until finds the sensor.
-			adc_presence_check1 = ADCReadChannelOne(ADC0);
-			adc_presence_check2 = ADCReadChannelOne(ADC1);
-			if(( adc_presence_check1 == 1) && (adc_presence_check2 == 1)){
-				emberAfAppPrintln("ADC0 & ADC1 Channel 1 Fail");
-				repeatStateWithDelay(500); //reduced from 1s to 500ms
-				sensor_countbuffer[0] = 0;  //not connected sensor1
-				sensor_countbuffer[2] = 0;  //sensor 3
-			}  else if(adc_presence_check1 == 1) {
-				adc0_measurementskip_sensor1flag = 1; //means there is no sensor2
-				sensor_countbuffer[0] = 0;
-				sensor_countbuffer[2] = 1; //there is sensor 3
-				setNextState(REQUEST_MEASUREMENT2); //go and take measuremetn for sensor 4
-			} else if(adc_presence_check2 == 1){
-				adc1_measurementskip_sensor3flag = 1; //means there is no sensor4
-				sensor_countbuffer[0] = 1; //there is sensor 1
-				sensor_countbuffer[2] = 0;
-				setNextState(REQUEST_MEASUREMENT2); //go and take measurement for sensor 2
-			}else {
-				sensor_countbuffer[0] = 1;
-				sensor_countbuffer[2] = 1;
-				setNextState(REQUEST_MEASUREMENT2); //if both sensors are populated
-			}
-		}
+					adc_presence_check2 = ADCReadChannelThree(ADC1);
+					if((adc_presence_check1 == 1) && (adc_presence_check2 == 1)) {  //if there is no sensor2 and sensor4
+						adc0_ch3measurementskip = adc1_ch3measurementskip = 1; //add some control like wait for few reapeat events before confirming the sensor existance
+					} else if(adc_presence_check1 == 1) {
+						adc0_ch3measurementskip = 1; //means there is no sensor2
+					} else if(adc_presence_check2 == 1){
+						adc1_ch3measurementskip = 1; //means there is no sensor42
+					} else {
+						emberAfAppPrintln("rd = ch3");
+						adc0_ch3measurementskip = adc1_ch3measurementskip = 0; //if both are present
+						sensor_countbuffer[1] = 1;
+					//	sensor_countbuffer[3] = 1;
+					}
+					setNextState(REQUEST_MEASUREMENT2); //if 2 sensors are available to measure
+
+				} else { // Read the channel, if there is no response just loop back with a delay of 1s until finds the sensor.
+					adc_presence_check1 = ADCReadChannelOne(ADC0);
+					adc_presence_check2 = ADCReadChannelOne(ADC1);
+					emberAfAppPrintln("adc1 ch1_presence_check2 = %d",adc_presence_check2);
+					if(( adc_presence_check1 == 1) && (adc_presence_check2 == 1)){
+						emberAfAppPrintln("ADC0 & ADC1 Channel 1 Fail");
+						repeatStateWithDelay(500); //reduced from 1s to 500ms
+					} /* else if(adc_presence_check1 == 1) {
+						adc0_ch1measurementskip = 1; //means there is no sensor2
+						setNextState(REQUEST_MEASUREMENT2); //if both sensors are populated, go and take measurement for sensor
+					}*/ else if(adc_presence_check2 == 1){
+						emberAfAppPrintln("ADC0 & ADC1 Channel 1 Fail");
+					//	adc1_ch1measurementskip = 1; //means there is no sensor4
+						repeatStateWithDelay(500);
+					}else {
+						sensor_countbuffer[0] = 1;
+						sensor_countbuffer[2] = 1;
+					//	setNextState(REQUEST_MEASUREMENT2); //if both sensors are populated, go and take measurement for sensor
+					}
+					setNextState(REQUEST_MEASUREMENT2); //if both sensors are populated, go and take measurement for sensor
+				}
 		break;
 	case REQUEST_MEASUREMENT2:
-//		emberAfAppPrintln("REQUEST_MEASUREMENT2");
+		emberAfAppPrintln("REQUEST_MEASUREMENT2");
 
 		if(channel_call_flag == 1) {
-				ADCRequestCh4(ADC0);
-				ADCRequestCh4(ADC1);
+			ADCRequestCh4(ADC0);
+			emberAfAppPrintln("ch4");
+		//	ADCRequestCh4(ADC1);
 		} else {
-					ADCRequestCh2(ADC0);
-					ADCRequestCh2(ADC1);
+			ADCRequestCh2(ADC0);
+			ADCRequestCh2(ADC1);
 		}
-
+		setNextStateWithDelay(FETCH_MEASUREMENT2,500);
 		break;
 
 	case FETCH_MEASUREMENT2:
+		emberAfAppPrintln("FETCH_MEASUREMENT2");
 		if(channel_call_flag == 1){  //If sensor is exist read the channel
-		//	adc_presence_check1 =
-			if(!adc0_measurementskip_sensor2flag)
-				ADCReadChannelFour(ADC0);
-			//adc_presence_check2 =
-			if(!adc1_measurementskip_sensor4flag)
-				ADCReadChannelFour(ADC1);
-			else {
-				ADCReadChannelFour(ADC0);
-				ADCReadChannelFour(ADC1);
-			}
-			setNextStateWithDelay(TRANSMIT, 500);
-		} else { // Read the channel, if there is no response just loop back with a delay of 1s until finds the sensor.
-			adc_presence_check1 = ADCReadChannelTwo(ADC0);
-			adc_presence_check2 = ADCReadChannelTwo(ADC1);
-			if(( adc_presence_check1 == 1) && (adc_presence_check2 == 1)){
-				emberAfAppPrintln("ADC0 & ADC1 Channel 2 Fail");
-				repeatStateWithDelay(500);
-			} else {
+				adc_presence_check1 =	ADCReadChannelFour(ADC0);
+			//	adc_presence_check2 =	ADCReadChannelFour(ADC1);
+			/*	if((adc_presence_check1 == 1) && (adc_presence_check2 == 1)) {  //if there is no sensor2 and sensor4
+					if(adc0_ch3measurementskip == 1)
+						sensor_countbuffer[1] = 0;
+					if(adc1_ch3measurementskip == 1)
+						sensor_countbuffer[3] = 0;
+					adc0_sensor_select = SENSOR2; // adc0,adc1 sensor select flags are set to 2 and 4 to skip measurement cycle for sensor 2 and 4
+					adc1_sensor_select = SENSOR4;
+				//	adc0_ch4measurementskip = adc1_ch4measurementskip = 1;
+					channel_call_flag = 0;
+				} else if(adc_presence_check1 == 1) {
+					if(adc0_ch3measurementskip == 1)
+						sensor_countbuffer[1] = 0;
+				//	adc0_ch4measurementskip = 1; //means there is no sensor2
+				} else if(adc_presence_check2 == 1){
+					if(adc1_ch3measurementskip == 1)
+						sensor_countbuffer[3] = 0;
+				//	adc1_ch4measurementskip = 1; //means there is no sensor42
+				} else */{
+					sensor_countbuffer[1] = 1;
+				//	sensor_countbuffer[3] = 1;
+				//	setNextStateWithDelay(TRANSMIT, 500);
+				}
+				setNextStateWithDelay(TRANSMIT, 500);
+			} else { // Read the channel, if there is no response just loop back with a delay of 1s until finds the sensor.
+				adc_presence_check1 = ADCReadChannelTwo(ADC0);
+				adc_presence_check2 = ADCReadChannelTwo(ADC1);
+				if(( adc_presence_check1 == 1) && (adc_presence_check2 == 1)){
+					emberAfAppPrintln("ADC0 & ADC1 Channel 2 Fail"); //test purpose repoeating  but need some control to do other functions
+					repeatStateWithDelay(500);
+				}/*else if(adc_presence_check1 == 1) {
+					if(adc0_ch1measurementskip == 1)
+						sensor_countbuffer[0] = 0; //means sensor1 is not existed
+				//	adc0_ch2measurementskip = 1; //means there is no sensor2
+				} */else if(adc_presence_check2 == 1){
+					emberAfAppPrintln("ADC0 & ADC1 Channel 1 Fail");
+					repeatStateWithDelay(500);
+					if(adc1_ch1measurementskip == 1)
+						sensor_countbuffer[2] = 0;  //sensor 3 is not existed
+				//	adc1_ch2measurementskip = 1; //means there is no sensor4
+				} else {
+					sensor_countbuffer[0] = 1;
+				//	sensor_countbuffer[2] = 1;
+				//	setNextStateWithDelay(TRANSMIT, 500);
+				}
 				setNextStateWithDelay(TRANSMIT, 500);
 			}
-		}
-
 		break;
 
 	  case TRANSMIT:  //think about this when sensor 2 and sensor 4 are missing or any of the sensor from 2 and 4 is missing hpow to log data and how to skip the cycle of the measuremtn
 		  //or how to handle one of the sensors measure when there are 3 sensors
-		  if((adc0_sensor_select == SENSOR1) && (adc1_sensor_select == SENSOR3)) {
+		/*  if((adc0_sensor_select == SENSOR1) && (adc1_sensor_select == SENSOR3)) {
 			  logData(adc0_sensor_select); //adc0
 			  logData(adc1_sensor_select); //adc1
 		  } else  {
@@ -395,46 +433,108 @@ void gasSensorEventHandler(void){
 			  	else
 			  		emberAfAppPrintln("SENSOR2 & SENSOR 4 are not exist");
 		  }
-
+		  */
 //		  printData();
 	/*
 */
+		  emberAfAppPrintln("TRANSMIT");
+		/*  if(adc0_sensor_select == 1)
+			  logData(SENSOR1);
+		  else if(adc0_sensor_select == 2)
+			  logData(SENSOR2);
+		  else if(adc1_sensor_select == 3)
+			  logData(SENSOR3);
+		  else
+			  logData(SENSOR4);*/
+
+		/*  if(sensor_countbuffer[0] == 1)
+		  		logData(SENSOR1);
+		  if(sensor_countbuffer[1] == 1)
+		  		logData(SENSOR2);
+		  if(sensor_countbuffer[2] == 1)
+		  		logData(SENSOR3);
+		  if(sensor_countbuffer[3] == 1)
+		  		 logData(SENSOR4);*/
+		  switch(adc0_sensor_select) {
+			  case SENSOR1:
+				  emberAfAppPrintln("Hi --s1");
+				  if(sensor_countbuffer[0] == 1)
+					logData(SENSOR1);
+				  break;
+			  case SENSOR2:
+
+				  if(sensor_countbuffer[1] == 1)
+				  {
+					  emberAfAppPrintln("Hi--s2");
+					  logData(SENSOR2);
+				  }
+
+				  break;
+		  }
+		  switch(adc1_sensor_select) {
+		  	case SENSOR3:
+		  		emberAfAppPrintln("Hi");
+		  		if(sensor_countbuffer[2] == 1)
+		  			logData(SENSOR3);
+		  		break;
+		  	case SENSOR4:
+		  		emberAfAppPrintln("Hi1");
+		  		if(sensor_countbuffer[3] == 1)
+		  			 logData(SENSOR4);
+		  		break;
+		  }
 		  if(count < 5 ) {//&& adc_select == 0){   //0 1 2  3 4
-		  //			  emberAfAppPrintln("IF 1");
+		  	 emberAfAppPrintln("IF 1");
+		  	 if(adc0_sensor_select == SENSOR1)
+		  	 {
+		  		adc0_sensor_select = SENSOR2;
+		  		channel_call_flag = 1;
+		  	 }
+		  	 else
+		  	 {
+
 		  	//	adc_select = 1;
-				 if((adc0_sensor_select == SENSOR1) && (adc1_sensor_select == SENSOR3)) {
-					adc0_sensor_select = SENSOR2;
+			/*	 if((adc0_sensor_select == SENSOR1) || (adc1_sensor_select == SENSOR3)) {
+				//	adc0_sensor_select = SENSOR2;
 					adc1_sensor_select = SENSOR4;
 					channel_call_flag = 1;
-				} else{
+				} else{*/
 					adc0_sensor_select = SENSOR1;
-					adc1_sensor_select = SENSOR3;
+				//	adc1_sensor_select = SENSOR3;
 					channel_call_flag = 0;
 					count++;  // 1 2 3 4
-				}
+				//}
+		  		}
 				setNextState(INITIAL);
-		  	} /*else if(count < 4 && adc_select == 1){
+		  	}
+
+		  /*else if(count < 4 && adc_select == 1){
 		  //			  emberAfAppPrintln("IF 2");
 		  		adc_select = 0;
 		  		count ++;
 		  		setNextState(INITIAL);
 		  	} */
 		  //else { //check whther this else is needed or not
-		  if((count == 5) && (gas_measurement_fanspinflag != 1)){
+		  if((count == 5) && (gas_measurement_fanspinflag == 1)){
+			  emberAfAppPrintln("zzzzzzzz");
 			  count = 0;
 			  gas_measurement_fanspinflag = 2;
-			  adc0_sensor_select = SENSOR1;
-			  adc1_sensor_select = SENSOR3;
-			  channel_call_flag = 0;
+			//  adc0_sensor_select = SENSOR1;
+			//  adc1_sensor_select = SENSOR3;
+			//  channel_call_flag = 0;
+			//  count = 0;
 			  setNextState(INITIAL);
-		  } else{
+		  }
+		  if((count == 5) && (gas_measurement_fanspinflag == 3)){
 			  	  // if it comes back from Enqueue data, this Transmit has to be called from AIr-quality-control.c's aqmMasterEventControl event handler.
 			 // GasSensor_DataPackaging();
 			  count = 0;
 			  gas_measurement_fanspinflag = 1;
 			  channel_call_flag = 0;
-			  adc0_measurementskip_sensor2flag = 0;
-			  adc1_measurementskip_sensor4flag = 0;
+			  adc0_ch1measurementskip = 0;
+			  adc1_ch1measurementskip = 0;
+			  adc0_ch3measurementskip = 0;
+			  adc1_ch3measurementskip = 0;
 			//  adc_select = 0;
 			  if(!low_power_mode){
 				  Solenoid(1,SOLENOID_CLOSE);
@@ -448,8 +548,14 @@ void gasSensorEventHandler(void){
 				  	si7021Gas();
 				  	for(uint8_t i=0;i<4;i++){
 				  		if(sensor_countbuffer[i] == 1)
+				  		{
+
 				  			firstpopulatedsensor = i+1;
+				  			emberAfAppPrintln("firstpopulatedsensor : %d", firstpopulatedsensor);
+				  			i = 4;
+				  		}
 				  	}
+				 // 	ADCDataPackaging(firstpopulatedsensor);
 				  	ADCDataPackaging(firstpopulatedsensor);
 				  	remoteEnqueueStart();
 				//  } //commented on 15/10/2021 to handle the payload for all 4 sensors
@@ -497,28 +603,33 @@ void logData(uint8_t sensor_number){
 	{
 	 switch(sensor_number)
 	 {
-		case 1:
+		case SENSOR1:
 			for(uint8_t i = 0; i < 3; i++){  //18bit - 3bytes for each read
 				after_airblow_sensor1_data[0][(count*3)+i] = adc0_ch1_data_buffer[i];
 				after_airblow_sensor1_data[1][(count*3)+i] = adc0_ch2_data_buffer[i];
+				//emberAfAppPrintln(" after airblow %d %d", adc0_ch1_data_buffer[i], adc0_ch2_data_buffer[i]);
 			}
 			break;
-		case 2:
+		case SENSOR2:
 				for(uint8_t i = 0; i < 3; i++){
 					after_airblow_sensor2_data[0][(count*3)+i] = adc0_ch3_data_buffer[i];
 					after_airblow_sensor2_data[1][(count*3)+i] = adc0_ch4_data_buffer[i];
+					//emberAfAppPrintln(" after airblow %d %d", adc0_ch3_data_buffer[i], adc0_ch4_data_buffer[i]);
 				}
 		  break;
-		case 3:
+		case SENSOR3:
 				for(uint8_t i = 0; i < 3; i++){
 					after_airblow_sensor3_data[0][(count*3)+i] = adc1_ch1_data_buffer[i];
 					after_airblow_sensor3_data[1][(count*3)+i] = adc1_ch2_data_buffer[i];
+				//	emberAfAppPrintln(" after airblow %d %d", adc1_ch1_data_buffer[i], adc1_ch2_data_buffer[i]);
 				}
 			break;
-		case 4:
+		case SENSOR4:
+			if(sensor_number == 4)
 				for(uint8_t i = 0; i < 3; i++){
 					after_airblow_sensor4_data[0][(count*3)+i] = adc1_ch3_data_buffer[i];
 					after_airblow_sensor4_data[1][(count*3)+i] = adc1_ch4_data_buffer[i];
+
 				}
 			break;
 	//		emberAfAppPrintln("Count = %d,O3 Work = %X%X%X,O3 AUX = %X%X%X",count, o3_data[0][0],o3_data[0][1],o3_data[0][2], o3_data[1][0],o3_data[1][1],o3_data[1][2]);
@@ -526,28 +637,32 @@ void logData(uint8_t sensor_number){
 	}else {
 		switch(sensor_number)
 		{
-			case 1:
+			case SENSOR1:
 				for(uint8_t i = 0; i < 3; i++){  //18bit - 3bytes for each read
 					before_airblow_sensor1_data[0][(count*3)+i] = adc0_ch1_data_buffer[i];
 					before_airblow_sensor1_data[1][(count*3)+i] = adc0_ch2_data_buffer[i];
+				//	emberAfAppPrintln(" before airblow %d %d", adc0_ch1_data_buffer[i], adc0_ch2_data_buffer[i]);
 				}
 				break;
-			case 2:
+			case SENSOR2:
 				for(uint8_t i = 0; i < 3; i++){
 					before_airblow_sensor2_data[0][(count*3)+i] = adc0_ch3_data_buffer[i];
 					before_airblow_sensor2_data[1][(count*3)+i] = adc0_ch4_data_buffer[i];
+				//	emberAfAppPrintln(" before airblow %d %d", adc0_ch3_data_buffer[i], adc0_ch4_data_buffer[i]);
 				}
 				break;
-			case 3:
+			case SENSOR3:
 				for(uint8_t i = 0; i < 3; i++){
 					before_airblow_sensor3_data[0][(count*3)+i] = adc1_ch1_data_buffer[i];
 					before_airblow_sensor3_data[1][(count*3)+i] = adc1_ch2_data_buffer[i];
+				//	emberAfAppPrintln(" before airblow %d %d", adc1_ch1_data_buffer[i], adc1_ch2_data_buffer[i]);
 				}
 				break;
-			case 4:
+			case SENSOR4:
 				for(uint8_t i = 0; i < 3; i++){
 					before_airblow_sensor4_data[0][(count*3)+i] = adc1_ch3_data_buffer[i];
 					before_airblow_sensor4_data[1][(count*3)+i] = adc1_ch4_data_buffer[i];
+				//	emberAfAppPrintln(" before airblow %d %d", adc1_ch3_data_buffer[i], adc1_ch4_data_buffer[i]);
 				}
 				break;
 			//		emberAfAppPrintln("Count = %d,O3 Work = %X%X%X,O3 AUX = %X%X%X",count, o3_data[0][0],o3_data[0][1],o3_data[0][2], o3_data[1][0],o3_data[1][1],o3_data[1][2]);
@@ -699,22 +814,23 @@ void setADCGain(uint8_t gain_in_a, uint8_t gain_in_b, uint8_t inputs){
 //This function is fine but need to test with hardware
 static void ADCInitialise(uint8_t adc_select_in, uint8_t sensor_number){
 	halI2cInitialize();
+	//halI2c1Initialize();
 	switch(sensor_number) {  // as for schematic s1- O3 s2 - NO2 s3 - SO2 s4-optional
-		case 1:  // adc_gain for O3
+		case SENSOR1:  // adc_gain for O3
 			adc_gain = 4;
 			adc_gain_a =  4;
 			adc_gain_b  = 4;
 		break;
-		case 2: // adc_gain for NO2
+		case SENSOR2: // adc_gain for NO2
 			adc_gain = 4;
 			adc_gain_a =  4;
 			adc_gain_b = 4;
 		break;
-		case 3: // default adc_gain is set for SO2
+		case SENSOR3: // default adc_gain is set for SO2
 			adc_gain = 2;
 			adc_gain_a = 2;
 			adc_gain_b = 2;
-		case 4: // Assuming as gain 2
+		case SENSOR4: // Assuming as gain 2
 			adc_gain = 2;
 			adc_gain_a = 2;
 			adc_gain_b = 2;
@@ -730,40 +846,58 @@ static void ADCInitialise(uint8_t adc_select_in, uint8_t sensor_number){
 	} else {
 		adc_gain = adc_gain_b;
 	}
-
-	switch(sensor_number)
+	emberAfAppPrintln("adc%d gain = %d", adc_select_in, adc_gain);
+/*	if(adc_select_in == 0)
 	{
-		case 1: case 3: default:
-			switch (adc_gain){
-				case 1:
+		adc0_ch1_config_register = channel_config_register1;
+		adc0_ch2_config_register = channel_config_register2;
+		adc0_ch1_check_byte = channel_1_check_byte;
+		adc0_ch2_check_byte = channel_2_check_byte;
+	}
+	else
+	{
+		adc1_ch1_config_register = channel_config_register1;
+		adc1_ch2_config_register = channel_config_register2;
+		adc1_ch1_check_byte = channel_1_check_byte;
+		adc1_ch2_check_byte = channel_2_check_byte;
+	}
+*/
+	//if((sensor_number == 1) || (sensor_number == 3))
+	switch(sensor_number) {
+		case SENSOR1: case SENSOR3://default:
+			emberAfAppPrintln("sensor %d", sensor_number);
+		switch(adc_gain){
+			emberAfAppPrintln("switch 1 3");
+				case GAINx1:
 					channel_config_register1 = channel_config_register1_G1;
 					channel_config_register2 = channel_config_register2_G1;
 					channel_1_check_byte = CHANNEL_1_CHECK_BYTE_G1;
 					channel_2_check_byte = CHANNEL_2_CHECK_BYTE_G1;
 					break;
 
-				case 2:
+				case GAINx2:
 					channel_config_register1 = channel_config_register1_G2;
 					channel_config_register2 = channel_config_register2_G2;
 					channel_1_check_byte = CHANNEL_1_CHECK_BYTE_G2;
 					channel_2_check_byte = CHANNEL_2_CHECK_BYTE_G2;
 					break;
 
-				case 4:
+				case GAINx4:
 					channel_config_register1 = channel_config_register1_G4;
 					channel_config_register2 = channel_config_register2_G4;
 					channel_1_check_byte = CHANNEL_1_CHECK_BYTE_G4;
 					channel_2_check_byte = CHANNEL_2_CHECK_BYTE_G4;
+					emberAfAppPrintln(" I am from gain4");
 					break;
 
-				case 8:
+				case GAINx8:
 					channel_config_register1 = channel_config_register1_G8;
 					channel_config_register2 = channel_config_register2_G8;
 					channel_1_check_byte = CHANNEL_1_CHECK_BYTE_G8;
 					channel_2_check_byte = CHANNEL_2_CHECK_BYTE_G8;
 					break;
 
-				default:
+				default: //gain 1
 					channel_config_register1 = channel_config_register1_G1;
 					channel_config_register2 = channel_config_register2_G1;
 					channel_1_check_byte = CHANNEL_1_CHECK_BYTE_G1;
@@ -771,37 +905,39 @@ static void ADCInitialise(uint8_t adc_select_in, uint8_t sensor_number){
 					break;
 			}
 			break;
-		case 2: case 4:
-			switch (adc_gain){
-					case 1:
+		case SENSOR2: case SENSOR4:
+			emberAfAppPrintln("sensor 2 4");
+			switch(adc_gain){
+			emberAfAppPrintln("switch 2 4");
+					case GAINx1:
 						channel_config_register1 = CHANNEL_3_CONFIG_REGISTER_G1;
 						channel_config_register2 = CHANNEL_4_CONFIG_REGISTER_G1;
 						channel_1_check_byte = CHANNEL_3_CHECK_BYTE_G1;
 						channel_2_check_byte = CHANNEL_4_CHECK_BYTE_G1;
 						break;
 
-					case 2:
+					case GAINx2:
 						channel_config_register1 = CHANNEL_3_CONFIG_REGISTER_G2;
 						channel_config_register2 = CHANNEL_4_CONFIG_REGISTER_G2;
 						channel_1_check_byte = CHANNEL_3_CHECK_BYTE_G2;
 						channel_2_check_byte = CHANNEL_4_CHECK_BYTE_G2;
 						break;
 
-					case 4:
+					case GAINx4:
 						channel_config_register1 = CHANNEL_3_CONFIG_REGISTER_G4;
 						channel_config_register2 = CHANNEL_4_CONFIG_REGISTER_G4;
 						channel_1_check_byte = CHANNEL_3_CHECK_BYTE_G4;
 						channel_2_check_byte = CHANNEL_4_CHECK_BYTE_G4;
 						break;
 
-					case 8:
+					case GAINx8:
 						channel_config_register1 = CHANNEL_3_CONFIG_REGISTER_G8;
 						channel_config_register2 = CHANNEL_4_CONFIG_REGISTER_G8;
 						channel_1_check_byte = CHANNEL_3_CHECK_BYTE_G8;
 						channel_2_check_byte = CHANNEL_4_CHECK_BYTE_G8;
 						break;
 
-					default:
+					default:  //gain 1
 						channel_config_register1 = CHANNEL_3_CONFIG_REGISTER_G1;
 						channel_config_register2 = CHANNEL_4_CONFIG_REGISTER_G1;
 						channel_1_check_byte = CHANNEL_3_CHECK_BYTE_G1;
@@ -810,33 +946,84 @@ static void ADCInitialise(uint8_t adc_select_in, uint8_t sensor_number){
 					}
 			break;
 		}
-		switch(sensor_number)
-		{
-			case 1:
+
+	/*if(sensor_number == 1)
+	{
+		emberAfAppPrintln("sensor-- %d", sensor_number);
+		adc0_ch1_config_register = channel_config_register1_G4;
+		adc0_ch2_config_register = channel_config_register2_G4;
+		adc0_ch1_check_byte = CHANNEL_1_CHECK_BYTE_G4;
+		adc0_ch2_check_byte = CHANNEL_2_CHECK_BYTE_G4;
+	}else if(sensor_number == 2)
+	{
+		emberAfAppPrintln("sensor-- %d", sensor_number);
+		adc0_ch3_config_register = CHANNEL_3_CONFIG_REGISTER_G4;
+		adc0_ch4_config_register = CHANNEL_4_CONFIG_REGISTER_G4;
+		adc0_ch3_check_byte = CHANNEL_3_CHECK_BYTE_G4;
+		adc0_ch4_check_byte = CHANNEL_4_CHECK_BYTE_G4;
+	}else if(sensor_number == 3)
+	{
+		emberAfAppPrintln("sensor-- %d", sensor_number);
+		emberAfAppPrintln("sensor cofig switch");
+		adc1_ch1_config_register = channel_config_register1_G4;
+		adc1_ch2_config_register = channel_config_register2_G4;
+		adc1_ch1_check_byte = CHANNEL_1_CHECK_BYTE_G4;
+		adc1_ch2_check_byte = CHANNEL_2_CHECK_BYTE_G4;
+	}
+	else
+	{
+		emberAfAppPrintln("sensor-- %d", sensor_number);
+		emberAfAppPrintln("sensor cofig switch");
+		adc1_ch3_config_register = CHANNEL_3_CONFIG_REGISTER_G4;
+		adc1_ch4_config_register = CHANNEL_4_CONFIG_REGISTER_G4;
+		adc1_ch3_check_byte = CHANNEL_3_CHECK_BYTE_G4;
+		adc1_ch4_check_byte = CHANNEL_4_CHECK_BYTE_G4;
+	}*/
+	//emberAfAppPrintln("sensor-- %d", sensor_number);
+		switch(sensor_number) {
+			emberAfAppPrintln("sensor cofig switch");
+			case SENSOR1:
 				adc0_ch1_config_register = channel_config_register1;
 				adc0_ch2_config_register = channel_config_register2;
 				adc0_ch1_check_byte = channel_1_check_byte;
 				adc0_ch2_check_byte = channel_2_check_byte;
 				break;
-			case 2:
+			case SENSOR2:
 				adc0_ch3_config_register = channel_config_register1;
 				adc0_ch4_config_register = channel_config_register2;
 				adc0_ch3_check_byte = channel_1_check_byte;
 				adc0_ch4_check_byte = channel_2_check_byte;
 				break;
-			case 3:
+			case SENSOR3:
 				adc1_ch1_config_register = channel_config_register1;
 				adc1_ch2_config_register = channel_config_register2;
 				adc1_ch1_check_byte = channel_1_check_byte;
 				adc1_ch2_check_byte = channel_2_check_byte;
 				break;
-			case 4:
+			case SENSOR4:
 				adc1_ch3_config_register = channel_config_register1;
 				adc1_ch4_config_register = channel_config_register2;
 				adc1_ch3_check_byte = channel_1_check_byte;
 				adc1_ch4_check_byte = channel_2_check_byte;
 				break;
 		}
+	/*	if( sensor_number == 1){
+			emberAfAppPrintln("confuig");
+			halI2cWriteBytes(MCP3424_0_WRITE_ADDRESS, &adc0_ch2_config_register, 1);
+			halI2cWriteBytes(MCP3424_0_WRITE_ADDRESS, &adc0_ch1_config_register, 1);
+		} else if(sensor_number == 2) {
+			halI2cWriteBytes(MCP3424_0_WRITE_ADDRESS, &adc0_ch3_config_register, 1);
+			halI2cWriteBytes(MCP3424_0_WRITE_ADDRESS, &adc0_ch4_config_register, 1);
+		}
+		else if(sensor_number == 3) {
+					halI2cWriteBytes(MCP3424_1_WRITE_ADDRESS, &adc1_ch1_config_register, 1);
+					halI2cWriteBytes(MCP3424_1_WRITE_ADDRESS, &adc1_ch2_config_register, 1);
+				}
+		else {
+					halI2cWriteBytes(MCP3424_1_WRITE_ADDRESS, &adc1_ch3_config_register, 1);
+					halI2cWriteBytes(MCP3424_1_WRITE_ADDRESS, &adc1_ch4_config_register, 1);
+				}*/
+
 		if(adc_select_in == 0){
 			halI2cWriteBytes(MCP3424_0_WRITE_ADDRESS, &channel_config_register1, 1);
 			halI2cWriteBytes(MCP3424_0_WRITE_ADDRESS, &channel_config_register2, 1);
@@ -844,22 +1031,26 @@ static void ADCInitialise(uint8_t adc_select_in, uint8_t sensor_number){
 			halI2cWriteBytes(MCP3424_1_WRITE_ADDRESS, &channel_config_register1, 1);
 			halI2cWriteBytes(MCP3424_1_WRITE_ADDRESS, &channel_config_register2, 1);
 		}
-
+	//	emberAfAppPrintln("sensor--- %d", sensor_number);
 }
 
 static void ADCRequestCh1(uint8_t adc_select_in){
 
 	if(adc_select_in == 0){
+		emberAfAppPrintln("adc0 ch1 %d", adc0_ch1_config_register);
 		halI2cWriteBytes(MCP3424_0_WRITE_ADDRESS, &adc0_ch1_config_register, 1);
 	} else {
+		emberAfAppPrintln("adc1 ch1");
 		halI2cWriteBytes(MCP3424_1_WRITE_ADDRESS, &adc1_ch1_config_register, 1);
 	}
 }
 
 static void ADCRequestCh2(uint8_t adc_select_in){
 	if(adc_select_in == 0){
+		emberAfAppPrintln("adc0 ch2 %d",adc0_ch2_config_register);
 		halI2cWriteBytes(MCP3424_0_WRITE_ADDRESS, &adc0_ch2_config_register, 1);
 	} else {
+		emberAfAppPrintln("adc1 ch2");
 		halI2cWriteBytes(MCP3424_1_WRITE_ADDRESS, &adc1_ch2_config_register, 1);
 	}
 }
@@ -881,8 +1072,8 @@ static void ADCRequestCh4(uint8_t adc_select_in){
 	}
 }
 
-void databuffer_empty(uint8_t buffer[]) {
-	for(int8_t i; i< sizeof(buffer);i++)
+void databuffer_empty(uint8_t buffer[4]) {
+	for(uint8_t i=0; i< 4;i++)
 	{
 		buffer[i] = '\0';
 	}
@@ -896,23 +1087,37 @@ void databuffer_empty(uint8_t buffer[]) {
 static uint8_t ADCReadChannelOne(uint8_t adc_select_in){
 
 	if(adc_select_in == 0){
+	//	emberAfAppPrintln("ADCReadChannelOne--");
 		databuffer_empty(adc0_ch1_data_buffer);
 		halI2cReadBytes(MCP3424_0_READ_ADDRESS, &adc0_ch1_data_buffer, 4);
+	/*	emberAfAppPrint("adc ch1 payload:   ");
+		for(int i=0;i<4;i++)
+			{
+				emberAfAppPrint(" %d ", adc0_ch1_data_buffer[i]);
+			}
+		emberAfAppPrintln("");*/
 		if(adc0_ch1_data_buffer[3] == adc0_ch1_check_byte){
-			return 0;
-		} else {
-			return 1;
+		//	if(adc0_ch1_data_buffer[0] != 0xff)
+				return 0;}
+			else{
+				return 1;
 		}
 	} else {
 		databuffer_empty(adc1_ch1_data_buffer);
 		halI2cReadBytes(MCP3424_1_READ_ADDRESS, &adc1_ch1_data_buffer, 4);
-		if(adc1_ch1_data_buffer[3] == adc1_ch1_check_byte){
-			return 0;
-		} else {
-			return 1;
-		}
+		emberAfAppPrint("adc1 ch1 payload:   ");
+				for(int i=0;i<4;i++)
+					{
+						emberAfAppPrint(" %d ", adc1_ch1_data_buffer[i]);
+					}
+				emberAfAppPrintln("");
+		if(adc1_ch1_data_buffer[3] == adc1_ch1_check_byte)//{
+		//	if(adc1_ch1_data_buffer[0] != 0xff)
+				return 0;
+			else
+				return 1;
+		//}
 	}
-
 }
 
 /**Aidan*
@@ -923,25 +1128,32 @@ static uint8_t ADCReadChannelOne(uint8_t adc_select_in){
  */
 
 static uint8_t ADCReadChannelTwo(uint8_t adc_select_in){
-
+//	emberAfAppPrintln("ADCReadChanneltwo");
 	if(adc_select_in == 0){
 		databuffer_empty(adc0_ch2_data_buffer);
 		halI2cReadBytes(MCP3424_0_READ_ADDRESS, &adc0_ch2_data_buffer, 4);
+	/*	emberAfAppPrint("adc ch2 payload:   ");
+		for(int i=0;i<4;i++) {
+			emberAfAppPrint(" %d ", adc0_ch2_data_buffer[i]);
+		}
+		emberAfAppPrintln("");*/
 		if(adc0_ch2_data_buffer[3] == adc0_ch2_check_byte){
-			return 0;
-		} else {
-			return 1;
+			if(adc0_ch2_data_buffer[0] != 0xff)
+				return 0;
+			else
+				return 1;
 		}
 	} else {
 		databuffer_empty(adc1_ch2_data_buffer);
 		halI2cReadBytes(MCP3424_1_READ_ADDRESS, &adc1_ch2_data_buffer, 4);
-		if(adc1_ch2_data_buffer[3] == adc1_ch2_check_byte){
+		if(adc1_ch2_data_buffer[3] == adc1_ch2_check_byte)//{
+		//	if(adc1_ch2_data_buffer[0] != 0xff)
+				return 0;
+			else
+				return 1;
 			return 0;
-		} else {
-			return 1;
-		}
+		// }
 	}
-
 }
 
 /**Aidan*
@@ -954,19 +1166,27 @@ static uint8_t ADCReadChannelThree(uint8_t adc_select_in){
 
 	if(adc_select_in == 0){
 		databuffer_empty(adc0_ch3_data_buffer);
-		halI2cReadBytes(MCP3424_0_READ_ADDRESS, &adc0_ch3_data_buffer, 4);
+		halI2cReadBytes(MCP3424_0_READ_ADDRESS, adc0_ch3_data_buffer, 4);
+		/*emberAfAppPrint("adc ch3 payload:   ");
+		for(int i=0;i<4;i++)
+				{
+					emberAfAppPrint("%d  ", adc0_ch3_data_buffer[i]);
+				}
+		emberAfAppPrintln("");*/
 		if(adc0_ch3_data_buffer[3] == adc0_ch3_check_byte){
-			return 0;
-		} else {
-			return 1;
+			if(adc0_ch3_data_buffer[0] != 0xff)
+				return 0;
+			else
+				return 1;
 		}
 	} else {
 		databuffer_empty(adc1_ch3_data_buffer);
-		halI2cReadBytes(MCP3424_1_READ_ADDRESS, &adc1_ch3_data_buffer, 4);
+		halI2cReadBytes(MCP3424_1_READ_ADDRESS, adc1_ch3_data_buffer, 4);
 		if(adc1_ch3_data_buffer[3] == adc1_ch3_check_byte){
-			return 0;
-		} else {
-			return 1;
+			if(adc1_ch3_data_buffer[0] != 0xff)
+				return 0;
+			else
+				return 1;
 		}
 	}
 
@@ -983,21 +1203,30 @@ static uint8_t ADCReadChannelFour(uint8_t adc_select_in){
 
 	if(adc_select_in == 0){
 		databuffer_empty(adc0_ch4_data_buffer);
-		halI2cReadBytes(MCP3424_0_READ_ADDRESS, &adc0_ch4_data_buffer, 4);
+		halI2cReadBytes(MCP3424_0_READ_ADDRESS, adc0_ch4_data_buffer, 4);
+		/*emberAfAppPrint("adc ch4 payload:   ");
+		for(int i=0;i<4;i++)
+		{
+						emberAfAppPrint(" %d", adc0_ch4_data_buffer[i]);
+					}
+		emberAfAppPrintln("");*/
 		if(adc0_ch4_data_buffer[3] == adc0_ch4_check_byte){
-			return 0;
-		} else {
-			return 1;
+			if(adc0_ch4_data_buffer[0] != 0xff)
+				return 0;
+			else
+				return 1;
 		}
 	} else {
 		databuffer_empty(adc1_ch4_data_buffer);
-		halI2cReadBytes(MCP3424_1_READ_ADDRESS, &adc1_ch4_data_buffer, 4);
+		halI2cReadBytes(MCP3424_1_READ_ADDRESS, adc1_ch4_data_buffer, 4);
 		if(adc1_ch4_data_buffer[3] == adc1_ch4_check_byte){
-			return 0;
-		} else {
-			return 1;
+			if(adc1_ch4_data_buffer[0] != 0xff)
+				return 0;
+			else
+				return 1;
 		}
 	}
+
 }
 
 void setAirTemp(uint16_t input){
@@ -1013,7 +1242,7 @@ void setAirHumidity(uint16_t input){
 //void ADCDataPackaging(void){
 void ADCDataPackaging(uint8_t sensorcount){
 //	uint8_t payload[66];
-	//emberAfAppPrintln("I am ADCDataPackaging");
+	emberAfAppPrintln("I am ADCDataPackaging");
 		payload[0] = air_temp >> 8;
 		payload[1] = air_temp;
 
@@ -1024,38 +1253,77 @@ void ADCDataPackaging(uint8_t sensorcount){
 		payload[5] = sample_rate;
 		switch(sensorcount)
 		{
-			case 1:
+			case SENSOR1:
 				//no2 working electrode data
+		//	if(sensorcount == 1) {
+
+			/*	for(uint8_t i = 6; i < 21; i++){
+								payload[i] = before_airblow_sensor1_data[0][i-6];
+								emberAfAppPrint("1 : %d   ",payload[i]);
+							}
+
+							//no2 auxiliary electrode data
+							for(uint8_t i = 21; i < 36; i++){
+								payload[i] = before_airblow_sensor1_data[1][i-21];
+								emberAfAppPrint(": %d    ",payload[i]);
+							}
+
+							//o3 working electrode data
+							for(uint8_t i = 36; i < 51; i++){
+								payload[i] = after_airblow_sensor1_data[0][i-36];
+								emberAfAppPrint(": %d    ",payload[i]);
+							}
+
+							//o3 working electrode data
+							for(uint8_t i = 51; i < 66; i++){
+								payload[i] = after_airblow_sensor1_data[1][i-51];
+								emberAfAppPrint(": %d    ",payload[i]);
+							}
+							emberAfAppPrintln("");*/
+						//	emberAfAppPrintln("1 : %d %d %d %d", payload[i],payload[i+15],payload[i+30],payload[i+45]);
 				for(uint8_t i = 6; i < 21; i++){
 					payload[i] = before_airblow_sensor1_data[0][i-6];
 					payload[i+15] = before_airblow_sensor1_data[1][i-6];
 					payload[i+30] = after_airblow_sensor1_data[0][i-6];
 					payload[i+45] = after_airblow_sensor1_data[1][i-6];
-				} break;
-			case 2:
+					emberAfAppPrintln("1 : %d %d %d %d", payload[i],payload[i+15],payload[i+30],payload[i+45]);
+				}
+				break;
+
+			//}
+			case SENSOR2:
+			//	if(sensorcount == 2){
 				//no2 working electrode data
 				for(uint8_t i = 6; i < 21; i++){
 					payload[i] = before_airblow_sensor2_data[0][i-6];
 					payload[i+15] = before_airblow_sensor2_data[1][i-6];
 					payload[i+30] = after_airblow_sensor2_data[0][i-6];
 					payload[i+45] = after_airblow_sensor2_data[1][i-6];
+					emberAfAppPrintln("2 : %d %d %d %d", payload[i],payload[i+15],payload[i+30],payload[i+45]);
 				} break;
-			case 3:
+			//	}
+			case SENSOR3:
 				//no2 working electrode data
+			//	if(sensorcount == 3){
 				for(uint8_t i = 6; i < 21; i++){
 					payload[i] = before_airblow_sensor3_data[0][i-6];
 					payload[i+15] = before_airblow_sensor3_data[1][i-6];
 					payload[i+30] = after_airblow_sensor3_data[0][i-6];
 					payload[i+45] = after_airblow_sensor3_data[1][i-6];
+					emberAfAppPrintln("3 : %d %d %d %d", payload[i],payload[i+15],payload[i+30],payload[i+45]);
 				} break;
-			case 4:
+				//}
+			case SENSOR4:
 				//no2 working electrode data
+			//	if(sensorcount == 4){
 				for(uint8_t i = 6; i < 21; i++){
 					payload[i] = before_airblow_sensor4_data[0][i-6];
 					payload[i+15] = before_airblow_sensor4_data[1][i-6];
 					payload[i+30] = after_airblow_sensor4_data[0][i-6];
 					payload[i+45] = after_airblow_sensor4_data[1][i-6];
+					emberAfAppPrintln("4 : %d %d %d %d", payload[i],payload[i+15],payload[i+30],payload[i+45]);
 				} break;
+				//}
 		}
 				//no2 auxiliary electrode data
 			/*	for(uint8_t i = 21; i < 36; i++){
@@ -1156,7 +1424,7 @@ void printData(void){
 	emberAfAppPrint("ADC-GAIN=%d,	",gas_adc_gain);
 	emberAfAppPrint("ADC-SAMPLE-RATE=%d,	",gas_adc_sample_rate);
 
-	emberAfAppPrint("NO2-WORK=");
+	emberAfAppPrint("Before-WORK=");
 	for(uint8_t i = 6; i < 21; i += 3){
 		no2_temp = payload[i] & 0x01; //0x03;
 		no2_sign = payload[i] & 0x80;
@@ -1167,7 +1435,7 @@ void printData(void){
 						 payload[i+2]);
 		emberAfAppPrint("%d:%d,	", (i-6)/3, no2_value);
 	}
-	emberAfAppPrint("NO2-AUX=");
+	emberAfAppPrint("Before-AUX=");
 	for(uint8_t i = 21; i < 36; i += 3){
 		no2_temp = payload[i] & 0x01; //0x03;
 		no2_sign = payload[i] & 0x80;
@@ -1178,10 +1446,7 @@ void printData(void){
 						 payload[i+2]);
 		emberAfAppPrint("%d:%d,	", (i-21)/3, no2_value);
 	}
-if(SENSOR_SELECT_FLAG == 1)
-	emberAfAppPrint("SO2-WORK=");
-if(SENSOR_SELECT_FLAG == 2)
-	emberAfAppPrint("O3-WORK=");
+	emberAfAppPrint("After-WORK=");
 	for(uint8_t i = 36; i < 51; i += 3){
 		o3_temp = payload[i] & 0x01; //0x03;
 		o3_sign = payload[i] & 0x80;
@@ -1192,10 +1457,7 @@ if(SENSOR_SELECT_FLAG == 2)
 						 payload[i+2]);
 		emberAfAppPrint("%d:%d,	", (i-36)/3, o3_value);
 	}
-	if(SENSOR_SELECT_FLAG == 1)
-		emberAfAppPrint("SO2-AUX=");
-	if(SENSOR_SELECT_FLAG == 2)
-		emberAfAppPrint("O3-AUX=");
+		emberAfAppPrint("After-AUX=");
 	for(uint8_t i = 51; i < 66; i += 3){
 		o3_temp = payload[i] & 0x01; //0x03;
 		o3_sign = payload[i] & 0x80;

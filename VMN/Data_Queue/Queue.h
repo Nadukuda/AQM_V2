@@ -19,7 +19,7 @@
 #define MAX_SIZE 2042 // 7 days of measurements at 5 min intervals
 
 uint8_t pm_payload[28];
-uint8_t gas_payload[74];
+uint8_t gas_payload[75];
 
 boolean transmission_flag_pm;
 

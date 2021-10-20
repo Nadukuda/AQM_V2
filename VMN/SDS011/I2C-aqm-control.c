@@ -63,7 +63,7 @@ void aqmPowerOn(uint8_t sensor_select){
 		if(low_power_mode){
 			// open selected solenoid
 			if(sensor_select == 0){
-				emberAfAppPrintln("sol1");
+				emberAfAppPrintln("sol1--");  //test purpose
 				valve_position[1] = sol1_open;
 			} else {
 				emberAfAppPrintln("sol2");

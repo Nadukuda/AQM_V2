@@ -74,11 +74,14 @@
 
 #define CONNECTED_S1			NO2
 #define CONNECTED_S2			O3
-#define CONNECTED_S3			SO2
+#define CONNECTED_S3			NO_SENSOR_CONNECTED
 #define CONNECTED_S4			NO_SENSOR_CONNECTED
 
-uint8_t sensor_countbuffer[4] = {'\0', '\0','\0','\0'};
-uint8_t  firstpopulatedsensor = 0;
+#define GAINx1					1
+#define GAINx2					2
+#define GAINx4					4
+#define GAINx8					8
+
 //*********************************************************************************
 //*********************************************************************************
 
