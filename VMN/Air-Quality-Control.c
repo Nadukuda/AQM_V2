@@ -37,7 +37,7 @@ enum {
 
 
 // interval between scheduled AQM measurements in milliseconds.
-static long master_interval = 259000;// was 300000; // 5 min this was changed to get the timestamp as 5min instead of 5m 41s 29/09/2021
+static long master_interval = 15000;// test purpose 1min changed from 259000 to 60000//259000;// was 300000; // 5 min this was changed to get the timestamp as 5min instead of 5m 41s 29/09/2021
 
 static boolean repeat = false;
 static uint8_t purge_limit = 20;
@@ -80,7 +80,7 @@ extern void ADCDataPackaging(uint8_t sensorcount);
 extern uint8_t sensor_countbuffer[4];   //please update this buffer based on the sensors connected if connected value as 1 , Not connected = 0
 extern uint8_t  firstpopulatedsensor;
 extern uint8_t sensorcount;
-
+extern void Solenoid_init(void);
 uint8_t sensor_notconnected(uint8_t sensornum)
 {
 	switch(sensornum)
@@ -111,7 +111,7 @@ uint8_t sensor_connected(uint8_t sensornum)
 
 void aqmMasterEventHandler(void){
 	emberEventControlSetInactive(aqmMasterEventControl);
-
+	uint8_t sensor_type;
 	switch (aqmMasterState) {
 
 		case INACTIVE:
@@ -120,6 +120,7 @@ void aqmMasterEventHandler(void){
 		break;
 
 		case ACTIVE:
+			Solenoid(SOLENOID3,SOLENOID_OPEN); //solenoid three control
 			setFanSpeed(0);
 			setNextState(AQM);
 		break;
@@ -133,6 +134,7 @@ void aqmMasterEventHandler(void){
 
 		case GAS:
 			gasSensorSingle();  //here i have 4 payloads each one is from each sensor
+		//	Solenoid(SOLENOID3,SOLENOID_CLOSE);
 		break;
 
 		case ENQUEUE_DATA:
@@ -180,46 +182,37 @@ void aqmMasterEventHandler(void){
 			gas_payload[71] = air_quality_temp.date >> 16;
 			gas_payload[72] = air_quality_temp.date >> 8;
 			gas_payload[73] = air_quality_temp.date;
+		//	emberAfAppPrintln("RTC time stamp : %d/%d/%d  %d:%d:%d", gas_payload[67],gas_payload[68],gas_payload[69],gas_payload[71],gas_payload[72],gas_payload[73]);
 			if(sensorcount <=  firstpopulatedsensor ) {
 				sensorcount = firstpopulatedsensor;
 				emberAfAppPrintln("firstpopulatedsensor entry %d", firstpopulatedsensor);
 				switch(sensorcount){
 				emberAfAppPrintln("sensorcount = %d entry", sensorcount);
-				//if (sensorcount == 1)
-					case SENSOR1:
-						gas_payload[74] = ((CONNECTED_S1 << 4)| 0x00); break;
-					case SENSOR2:
-			//	else if (sensorcount == 2)
-						gas_payload[74] = ((CONNECTED_S2 << 4) | 0x01); break;
-					case SENSOR3:
-				//else if (sensorcount == 3)
-						gas_payload[74] = ((CONNECTED_S3 << 4) | 0x02); break;
-				//else
-					case SENSOR4:
-						gas_payload[74] = ((CONNECTED_S4 << 4) | 0x03); break;
+					case SENSOR1: gas_payload[74] = ((CONNECTED_S1 << 4)| 0x00); break;
+					case SENSOR2: gas_payload[74] = ((CONNECTED_S2 << 4) | 0x01); break;
+					case SENSOR3: gas_payload[74] = ((CONNECTED_S3 << 4) | 0x02); break;
+					case SENSOR4: gas_payload[74] = ((CONNECTED_S4 << 4) | 0x03); break;
 			   }
 				VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
 				emberAfAppPrintln("Sensor ID byte1 %x", gas_payload[74]);
-				sensorcount++;
+
+				//sensor_type = sensor_countbuffer[sensorcount - 1];
 			}
-		//	for(;sensorcount<=4; sensorcount++) {
-			if(sensorcount <= 4) {
-				uint8_t sensor_type = sensor_countbuffer[sensorcount - 1];
-				switch(sensor_type)
-			//	if(sensor_type == 1)
-				{
-			/*	case 0: //not connected  15/10/2021 Tim told me that if No sensor then No need to send the payload
-					switch(sensorcount + 1) {
-						 case 1: gas_payload[74] = (sensor_notconnected(CONNECTED_S1) | 0x00); break;
-						 case 2: gas_payload[74] = (sensor_notconnected(CONNECTED_S2) | 0x01); break;
-						 case 3: gas_payload[74] = (sensor_notconnected(CONNECTED_S3) | 0x02); break;
-						 case 4: gas_payload[74] = (sensor_notconnected(CONNECTED_S4) | 0x03); break;
-						 default: //has to there something as a default
-					}
-				break;*/
-				case 1:  //connected
-					switch(sensorcount) {
-					/*	case 1:
+			sensorcount++;
+			sensor_type = sensor_countbuffer[sensorcount - 1];
+			if((sensor_type == 0) && (sensorcount <= 4)) {
+			//	for(uint8_t i=sensorcount;i<=4;i++) {
+				for(;sensorcount<=4;) {
+					sensorcount++;
+					sensor_type = sensor_countbuffer[sensorcount - 1];
+					if(sensor_type == 1)
+						//i=5;
+						break;
+				}
+			}
+			if((sensorcount <= 4) &&  (sensor_type == 1)){
+				switch(sensorcount) {
+				/*	case 1:
 						//	ADCDataPackaging(sensorcount);
 						//	setNextState(ENQUEUE_DATA);
 							gas_payload[74] = (CONNECTED_S1 << 4 | 0x00);
@@ -227,45 +220,36 @@ void aqmMasterEventHandler(void){
 							sensorcount++;
 							ADCDataPackaging(sensorcount);
 							setNextState(ENQUEUE_DATA);
-							break;*/
-						case SENSOR2:
-							emberAfAppPrintln("sensor_countbuffer 2");
-					//if(sensorcount == 2)
-					{
-							ADCDataPackaging(sensorcount);
-							setNextState(ENQUEUE_DATA);
-							gas_payload[74] = (CONNECTED_S2 << 4 | 0x01);
-							VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
+					break;*/
+					case SENSOR2:
+						ADCDataPackaging(sensorcount);
+						setNextState(ENQUEUE_DATA);
+						gas_payload[74] = (CONNECTED_S2 << 4 | 0x01);
+						VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
+						break;
+					case SENSOR3:
+						ADCDataPackaging(sensorcount);
+						setNextState(ENQUEUE_DATA);
+						gas_payload[74] = (CONNECTED_S3 << 4 | 0x02);
+						VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
+						break;
+					case SENSOR4:
+						ADCDataPackaging(sensorcount);
+						setNextState(ENQUEUE_DATA);
+						gas_payload[74] = (CONNECTED_S4 << 4 | 0x03);
+						VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
+						break;
 					}
-							break;
-						case SENSOR3:
-					//else if(sensorcount == 3)
-					{
-							ADCDataPackaging(sensorcount);
-							setNextState(ENQUEUE_DATA);
-							gas_payload[74] = (CONNECTED_S3 << 4 | 0x02);
-							VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
-					}
-							break;
-						case SENSOR4:
-					//else
-					{
-							ADCDataPackaging(sensorcount);
-							setNextState(ENQUEUE_DATA);
-							gas_payload[74] = (CONNECTED_S4 << 4 | 0x03);
-							VMN_payloadPackager(&global_server, gas_payload, 75, DAT, 0x0034);
-					}
-							break;
-					}
+					emberAfAppPrintln("Sensor ID byte %x", gas_payload[74]);
+					//sensorcount++;
+					//sensor_type = sensor_countbuffer[sensorcount - 1];
+			  }// else
+				//  sensorcount = 4; //to terminate the if loop to enter into the PURGE state
 
-				break;
-			  }
-				sensorcount++;
-				emberAfAppPrintln("Sensor ID byte %x", gas_payload[74]);
-			}
-			if(sensorcount > 4) {
+			if(sensorcount >= 4) {
 				PM_datasend_control = 0;
 				sensorcount = 1;
+				firstpopulatedsensor = 0;
 				setNextState(PURGE);
 			}
 			//Live GAS DATA send through
@@ -289,6 +273,7 @@ void aqmMasterEventHandler(void){
 */
 		break;
 		case PURGE:
+		emberAfAppPrintln("purge entry");
 			if(!low_power_mode && purge_limit > 0){
 				if(measurement_count >= purge_limit){
 					vortexAqmPurge(0);
@@ -379,8 +364,8 @@ void setAQMPowerMode(uint8_t power_mode_in){
 	if(power_mode_in != low_power_mode){
 		if(power_mode_in == 1){ 		// low power mode
 
-			Solenoid(0,1);//open solenoids
-			Solenoid(1,1);
+			Solenoid(SOLENOID1,SOLENOID_OPEN);//open solenoids
+			Solenoid(SOLENOID2,SOLENOID_OPEN);
 			//increase heartbeat interval
 			setHeartbeatInterval(300000);
 			// air quality master interval increase
@@ -389,8 +374,8 @@ void setAQMPowerMode(uint8_t power_mode_in){
 //			USART_Enable(USART0, usartDisable);
 			low_power_mode = true;
 		} else if(power_mode_in == 0){	// Standard Mode
-			Solenoid(0,0);
-			Solenoid(1,0);
+			Solenoid(SOLENOID1,SOLENOID_CLOSE);
+			Solenoid(SOLENOID2,SOLENOID_CLOSE);
 			setHeartbeatInterval(60000);
 //			USART_Enable(USART0, usartEnable);
 			low_power_mode = false;

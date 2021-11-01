@@ -42,6 +42,10 @@
 
 #define SOLENOID_OPEN				1
 #define SOLENOID_CLOSE				0
+#define SOLENOID1					0
+#define SOLENOID2					1
+#define SOLENOID3					2
+
 #define ADC0						0
 #define ADC1						1
 #define SENSOR1						1
@@ -49,6 +53,7 @@
 #define SENSOR3						3
 #define SENSOR4						4
 #define NO_SENSOR_CONNECTED			0
+
 // O3 = 001 SO2 = 002 NO2 = 003 NO = 100 CO = 101 H2S = 110 NH3 = 111
 #define O3							1
 #define SO2							2
@@ -57,6 +62,8 @@
 #define CO							5
 #define H2S							6
 #define NH3							7
+
+
 
 /*
 			LEFT					RIGHT
@@ -72,15 +79,27 @@
 
 */
 
+//Old format message structure works only when CONNECTED_S1 = NO2 and CONNECTED_S3 = O3
+// if YES CONNECTED_S1 = NO2 and CONNECTED_S3 = O3 then live data will send through old format+new format and new format data will only be buffered
+//if NO measured data sent through new format and data will also be buffered in new format
+
 #define CONNECTED_S1			NO2
 #define CONNECTED_S2			O3
-#define CONNECTED_S3			NO_SENSOR_CONNECTED
-#define CONNECTED_S4			NO_SENSOR_CONNECTED
+#define CONNECTED_S3			O3
+#define CONNECTED_S4			CO
+
+//Avaiable gains 1x 2x 4x 8x
+/*#define SENSOR1_DEFAULTGAIN		4
+#define SENSOR2_DEFAULTGAIN		2
+#define SENSOR3_DEFAULTGAIN		2
+#define SENSOR4_DEFAULTGAIN		4*/
 
 #define GAINx1					1
 #define GAINx2					2
 #define GAINx4					4
 #define GAINx8					8
+
+static uint8_t sensors_defaultgain[7] = {2,2,2,8,2,1,8};  //Default gains for O3,SO2,NO2,NO,CO,H2S,NH3 respectively
 
 //*********************************************************************************
 //*********************************************************************************

@@ -139,7 +139,7 @@ void aqmEventHandler(void){
 
 				// notify server that a coms failure has occured
 				VMN_payloadPackager(&global_server, 0x00, 1, DAT, 0x0006);
-				aqmPowerOff();
+			//	aqmPowerOff();
 				setNextStateWithDelay(ACTIVE, 1000);
 			} else {
 				serialFetch();

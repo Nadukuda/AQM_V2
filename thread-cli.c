@@ -330,6 +330,7 @@ EmberCommandEntry emberCommandTable[] = {
   emberCommandEntryAction("temp_externalstop", si7021Stop, "", ""),
   emberCommandEntryAction("set_datetime", rtc_datetime_set, "", ""),
   emberCommandEntryAction("get_datetime", rtc_datetime_get, "", ""),
+
 #ifdef EMBER_AF_ENABLE_CUSTOM_COMMANDS
   CUSTOM_COMMANDS
 #endif // EMBER_AF_ENABLE_CUSTOM_COMMANDS

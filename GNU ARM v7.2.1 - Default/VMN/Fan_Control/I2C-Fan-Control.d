@@ -167,7 +167,9 @@ VMN/Fan_Control/I2C-Fan-Control.o: ../VMN/Fan_Control/I2C-Fan-Control.c \
  c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\platform\base\hal\micro/diagnostic.h \
  c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\platform\base\hal\micro/symbol-timer.h \
  c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\protocol\thread\app\util\serial\command-interpreter2.h \
- c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\protocol\thread\app\thread\plugin\debug-print\debug-print.h
+ c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\protocol\thread\app\thread\plugin\debug-print\debug-print.h \
+ C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/Data_Protocol/VMN_definitions.h \
+ C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/Data_Protocol/VMN_globals.h
 
 C:/SiliconLabs/SimplicityStudio/v4/developer/sdks/gecko_sdk_suite/v2.5/platform/base/hal/micro/cortexm3/compiler/gcc.h:
 
@@ -506,3 +508,7 @@ c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\platform\
 c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\protocol\thread\app\util\serial\command-interpreter2.h:
 
 c:\siliconlabs\simplicitystudio\v4\developer\sdks\gecko_sdk_suite\v2.5\protocol\thread\app\thread\plugin\debug-print\debug-print.h:
+
+C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/Data_Protocol/VMN_definitions.h:
+
+C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2/Data_Protocol/VMN_globals.h:

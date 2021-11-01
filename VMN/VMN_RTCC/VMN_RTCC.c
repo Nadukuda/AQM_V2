@@ -290,7 +290,7 @@ void VMN_rtccGetDateTime(void){
 uint32_t VMN_time = START_TIME;
 uint32_t VMN_date = START_DATE;
 
-static uint8_t cal_sec = 30, cal_min = 43,cal_hour = 13, cal_day = 20, cal_month = 9, cal_year = 21; //after update
+static uint8_t cal_sec = 30, cal_min = 30,cal_hour = 14, cal_day = 28, cal_month = 10, cal_year = 21; //after update
 //static uint32_t last_RTCC_val = 0;
 //uint32_t rtcc_flag,rtcc_time,rtcc_date,rtccResetVal=0,rtccResetTs=0,bodCnt=0,buTime=0,bodTime=0,flagrtcc=0;
 //extern char timebuffer;
@@ -309,7 +309,7 @@ uint32_t VMN_rtccGetDate(void);
 void VMN_rtccSetDateTime(uint8_t *payload);
 void VMN_rtccUpdate(void);
 
-
+uint8_t rtccfunctioncall_entryflag=1;
 
 /**************************************************************************//**
 * @brief Setup RTCC for calendar.
@@ -414,6 +414,7 @@ time_t time_in_seconds(void) {//1 4 12 2021 12:50:02
 	    timeinfo.tm_min = (int)cal_min;
 	    timeinfo.tm_sec = (int)cal_sec;
 	    seconds = mktime(&timeinfo);
+	    rtccfunctioncall_entryflag = 2;
 	//    RTCDRV_SetWallClock(seconds);// added on 21/09/2021 to test RTC
 	//    emberAfAppPrintln("internal sec %d  %d %d %d %d %d %u\n", timeinfo.tm_mday, timeinfo.tm_mon,(timeinfo.tm_year + 1900), timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, seconds);
 	    return secs;
@@ -426,11 +427,18 @@ void rtccPrintDateTime(void)
   emberAfAppPrintln("DATE:%02d/%02d/20%02d", cal_day,cal_month,cal_year);
   emberAfAppPrintln("TIME = %02d:%02d:%02d", cal_hour,cal_min,cal_sec);
 }
-
+void rtctimestamp(void)
+{
+	emberAfAppPrint("DATE:%02d/%02d/20%02d  TIME = %02d:%02d:%02d", cal_day,cal_month,cal_year, cal_hour,cal_min,cal_sec);
+}
 //Updates the time added by Shravanthi to reduce the time drift.
 void VMN_rtccUpdate(void){
 	  time_t rtc_reading;// = seconds;
 	  struct tm *datetime;
+	  if(rtccfunctioncall_entryflag == 1) {
+		  time_in_seconds();
+		  rtccfunctioncall_entryflag = 2;
+	  }
 	  if(rtc_datetime_setflag == 2) {
 		  rtccTemp = rtcc_tickstosec;// + elapsed_time;
 		  rtc_datetime_setflag = 1;

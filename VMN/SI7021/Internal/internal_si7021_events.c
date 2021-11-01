@@ -55,6 +55,8 @@ uint8_t payload[4];
 #define ONE_MS_TICKS 33 //ticks
 extern uint32_t  RTCDRV_TicksToMsec(uint64_t ticks);
 extern void delay(uint32_t ms);
+extern void errormessagetimestamp(void);
+extern uint8_t errormessage_payload[9];
 
 void CORE_si7021EventHandler(void){
 	emberEventControlSetInactive(CORE_si7021EventControl);
@@ -67,8 +69,14 @@ void CORE_si7021EventHandler(void){
 	  case REQUEST_MEASUREMENT:
 		//  emberAfAppPrintln("REQUEST");
 		  CORE_si7021Setup();
-		  CORE_si7021RequestHumidity();
-
+		  uint8_t error = CORE_si7021RequestHumidity();
+		  if( error != 0 ) {
+			  errormessage_payload[0]=0x0F; // If Si7021/HTU21D is not responding
+			  errormessagetimestamp();
+			 VMN_payloadPackager(&global_server, &errormessage_payload, 9, DAT, 0x0035); //When ADC1 failed
+			 emberAfAppPrint(" TEMP/HUM SENSOR Not responding & Error code: %d",errormessage_payload[0]);emberAfAppPrintln("");
+			setNextState(TRANSMIT);
+		  }else
 		  setNextStateWithDelay(FETCH_MEASUREMENT, 20);
 	  break;
 

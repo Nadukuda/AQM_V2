@@ -61,7 +61,7 @@ void vortexAqmEventHandler(void){
 		break;
 
 	case OPEN:
-		Solenoid(valve_id ,1);
+		Solenoid(valve_id ,SOLENOID_OPEN);
 		setNextState(PURGE);
 		break;
 
@@ -74,7 +74,7 @@ void vortexAqmEventHandler(void){
 	case CLOSE:
 		assert(vortexAqmState == CLOSE);
 		setFanSpeed(0);
-		Solenoid(valve_id,0);
+		Solenoid(valve_id,SOLENOID_CLOSE);
 		setNextState(REPORT);
 		break;
 

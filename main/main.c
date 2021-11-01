@@ -136,6 +136,8 @@ int MAIN(MAIN_FUNCTION_PARAMETERS)
   return 0;
 }
 
+//extern void adc0sensorsstate_finder(void);
+//extern void adc1sensorsstate_finder(void);
 void emAfPluginAppFrameworkMainLoop(void *p_arg)
 {
   // Initialize a task for the application and plugin events and enable idling.
@@ -155,6 +157,8 @@ void emAfPluginAppFrameworkMainLoop(void *p_arg)
     *  to counteract the fan controller default of full on at startup.
     */
   fanInitialise();
+  //adc0sensorsstate_finder();
+  //adc1sensorsstate_finder();
   emberInit();
 
   while (true) {

@@ -41,6 +41,19 @@ void halI2cInitialize(void)
 	}
 }
 
+void halI2C_Si7021Initialize(void) {
+	flag = false;
+	halI2cInitialize();
+}
+void halI2C_ADC1Initialize(void) {
+	flag = false;
+	halI2cInitialize();
+}
+
+void halI2C_ADC0Initialize(void) {
+	flag = false;
+	halI2cInitialize();
+}
 // This initialization callback is for compatibility with AFV2.
 void emberAfPluginI2cDriverInitCallback(void)
 {

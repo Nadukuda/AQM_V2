@@ -26,11 +26,11 @@ uint8_t CORE_si7021_humidity_data[2];
 uint8_t CORE_si7021_temperature_data[2];
 
 void CORE_si7021Setup(void);
-void CORE_si7021RequestHumidity(void);
+//void CORE_si7021RequestHumidity(void);
 void CORE_si7021ReadHumidity(void);
 void CORE_si7021RequestTemperature(void);
 void CORE_si7021ReadTemperature(void);
-
+uint8_t CORE_si7021RequestHumidity(void);
 uint16_t CORE_si7021getHumidityData(void);
 uint16_t CORE_si7021getTemperatureData(void);
 
@@ -41,11 +41,14 @@ void CORE_si7021Setup(void){
 	}
 }
 
-void CORE_si7021RequestHumidity(void){
-	halI2c1WriteBytes(WRITE_ADDRESS,&MEASURE_HUMIDITY,1);
+//void CORE_si7021RequestHumidity(void)
+uint8_t CORE_si7021RequestHumidity(void){
+	return halI2c1WriteBytes(WRITE_ADDRESS,&MEASURE_HUMIDITY,1);
 }
 
 void CORE_si7021ReadHumidity(void){
+	CORE_si7021_humidity_data[0] = 0;
+	CORE_si7021_humidity_data[1] = 0;
 	halI2c1ReadBytes(READ_ADDRESS, &CORE_si7021_humidity_data,2);
 }
 
@@ -54,6 +57,8 @@ void CORE_si7021RequestTemperature(void){
 }
 
 void CORE_si7021ReadTemperature(void){
+	CORE_si7021_temperature_data[0] = 0;
+	CORE_si7021_temperature_data[1] = 0;
 	halI2c1ReadBytes(READ_ADDRESS, &CORE_si7021_temperature_data,2);
 }
 

@@ -27,7 +27,8 @@ uint8_t si7021_humidity_data[2];
 uint8_t si7021_temperature_data[2];
 
 void si7021Setup(void);
-void si7021RequestHumidity(void);
+//void si7021RequestHumidity(void);
+uint8_t si7021RequestHumidity(void);
 void si7021ReadHumidity(void);
 void si7021RequestTemperature(void);
 void si7021ReadTemperature(void);
@@ -37,16 +38,25 @@ uint16_t si7021getTemperatureData(void);
 
 void si7021Setup(void){
 	if(!init){
-		halI2cInitialize();
+		//halI2cInitialize();
+		halI2C_Si7021Initialize();
 		init = true;
 	}
 }
 
-void si7021RequestHumidity(void){
-	halI2cWriteBytes(WRITE_ADDRESS,&MEASURE_HUMIDITY,1);
+//void si7021RequestHumidity(void)
+uint8_t si7021RequestHumidity(void){
+	uint8_t result = halI2cWriteBytes(WRITE_ADDRESS,&MEASURE_HUMIDITY,1);
+//	if(result != 0)
+//	{
+	return result;
+			//	  emberAfAppPrintln("RESULT = %d ",result);// TEMP/HUM SENSOR Not responding & Error code: %d",errormessage_payload[0]);emberAfAppPrintln("");
+
 }
 
 void si7021ReadHumidity(void){
+	si7021_humidity_data[0] = 0;
+	si7021_humidity_data[1] = 0;
 	halI2cReadBytes(READ_ADDRESS, &si7021_humidity_data,2);
 }
 
@@ -55,6 +65,8 @@ void si7021RequestTemperature(void){
 }
 
 void si7021ReadTemperature(void){
+	si7021_temperature_data[0] = 0;
+	si7021_temperature_data[1] = 0;
 	halI2cReadBytes(READ_ADDRESS, &si7021_temperature_data,2);
 }
 

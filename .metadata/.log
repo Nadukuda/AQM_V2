@@ -1,0 +1,534 @@
+!SESSION 2021-10-28 15:06:40.004 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_92
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.silabs.ss.platform.apack.core 1 0 2021-10-28 15:07:34.385
+!MESSAGE Ignoring path $(env.STUDIO_PYTHON3_PATH) in Python
+
+!ENTRY com.silabs.ss.platform.apack.core 1 0 2021-10-28 15:07:34.390
+!MESSAGE Ignoring path $(env.STUDIO_PYTHON3_PATH)/bin in Python
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:07:38.580
+!MESSAGE Invalid discovery key: null
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:40.898
+!MESSAGE Error while updateLicenses from LicenseRetriever, asset reference not found: /C:/SiliconLabs/SimplicityStudio_new/v4/features/org.eclipse.rcp_4.5.1.v20150904-0015/license.html
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:40.900
+!MESSAGE Error while updateLicenses from LicenseRetriever, asset reference not found: /C:/SiliconLabs/SimplicityStudio_new/v4/offline/common/Silicon_Labs_VCP_Driver_End_User_License_Agreement/Silicon_Labs_VCP_Driver_End_User_License_Agreement_20170920.html
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:40.903
+!MESSAGE Error while updateLicenses from LicenseRetriever, asset reference not found: /C:/SiliconLabs/SimplicityStudio_new/v4/offline/common/Simplicity_Studio_Terms_of_Use_and_Privacy_Statement/Simplicity_Studio_Terms_of_Use_and_Privacy_Statement_20170905.html
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:40.905
+!MESSAGE Error while updateLicenses from LicenseRetriever, asset reference not found: /C:/SiliconLabs/SimplicityStudio_new/v4/offline/common/Master_Software_License_Agreement/Master_Software_License_Agreement_20201016.html
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:41.749
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.SLSP2UpdateSites.ensureStudioReposLoaded(SLSP2UpdateSites.java:643)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2005)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:07:41.752
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:41.772
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.SLSP2UpdateSites.ensureStudioReposLoaded(SLSP2UpdateSites.java:643)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2005)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:07:41.772
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:44.066
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.SLSP2UpdateSites.ensureStudioReposLoaded(SLSP2UpdateSites.java:643)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2014)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:07:44.067
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:44.090
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.SLSP2UpdateSites.ensureStudioReposLoaded(SLSP2UpdateSites.java:643)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2014)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:07:44.090
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:45.308
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getLocalStudioMetadataRepoToIu(InstallerUtils.java:650)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.findFeaturesForCapabilities(InstallerUtils.java:777)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.scanFeaturesProvidingMetadata(InstallerUtils.java:468)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getPackageProvidingMetadata(InstallerUtils.java:489)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.loadRemotePackages(PackageService.java:682)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getAllAvailablePackages(PackageService.java:140)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getAvailablePackages(PackageService.java:175)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.requestPackageTypeInstalled(PackageService.java:568)
+	at com.silabs.ss.platform.api.device.core.DeviceManager.triggerInspectors(DeviceManager.java:361)
+	at com.silabs.ss.platform.api.device.core.DeviceManager.addDevice(DeviceManager.java:322)
+	at com.silabs.ss.platform.api.device.core.detection.DeviceDetectionManager.processDetectionInfo(DeviceDetectionManager.java:206)
+	at com.silabs.ss.platform.api.device.core.detection.DeviceDetectionManager.list(DeviceDetectionManager.java:399)
+	at com.silabs.ss.platform.internal.apack.device.UsbDeviceBridgeListener.list(UsbHotplugNotifier.java:130)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.lambda$7(UsbManager.java:201)
+	at com.silabs.java.utils.ListenerList.fire(ListenerList.java:127)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.parseAction(UsbManager.java:201)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.parseAction(UsbManager.java:1)
+	at com.silabs.java.utils.LineParser$InternalActionListener.parseAction(LineParser.java:93)
+	at com.silabs.ss.platform.internal.apack.usb.UsbDetectorLineHandler.handle(UsbDetectorLineHandler.java:65)
+	at com.silabs.ss.platform.internal.apack.usb.UsbDetectorLineHandler.handle(UsbDetectorLineHandler.java:1)
+	at com.silabs.ss.platform.api.apack.core.execution.ErrorLoggerLineHandler.handle(Executioner.java:367)
+	at com.silabs.ss.platform.api.apack.core.execution.ErrorLoggerLineHandler.handle(Executioner.java:1)
+	at com.silabs.java.utils.LineParser.parse(LineParser.java:76)
+	at com.silabs.java.utils.LineParser.parse(LineParser.java:62)
+	at com.silabs.ss.platform.api.apack.core.execution.ParserRunnable.run(Executioner.java:329)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:07:45.310
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:45.332
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getLocalStudioMetadataRepoToIu(InstallerUtils.java:650)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.findFeaturesForCapabilities(InstallerUtils.java:777)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.scanFeaturesProvidingMetadata(InstallerUtils.java:468)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getPackageProvidingMetadata(InstallerUtils.java:489)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.loadRemotePackages(PackageService.java:682)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getAllAvailablePackages(PackageService.java:140)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getAvailablePackages(PackageService.java:175)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.requestPackageTypeInstalled(PackageService.java:568)
+	at com.silabs.ss.platform.api.device.core.DeviceManager.triggerInspectors(DeviceManager.java:361)
+	at com.silabs.ss.platform.api.device.core.DeviceManager.addDevice(DeviceManager.java:322)
+	at com.silabs.ss.platform.api.device.core.detection.DeviceDetectionManager.processDetectionInfo(DeviceDetectionManager.java:206)
+	at com.silabs.ss.platform.api.device.core.detection.DeviceDetectionManager.list(DeviceDetectionManager.java:399)
+	at com.silabs.ss.platform.internal.apack.device.UsbDeviceBridgeListener.list(UsbHotplugNotifier.java:130)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.lambda$7(UsbManager.java:201)
+	at com.silabs.java.utils.ListenerList.fire(ListenerList.java:127)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.parseAction(UsbManager.java:201)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.parseAction(UsbManager.java:1)
+	at com.silabs.java.utils.LineParser$InternalActionListener.parseAction(LineParser.java:93)
+	at com.silabs.ss.platform.internal.apack.usb.UsbDetectorLineHandler.handle(UsbDetectorLineHandler.java:65)
+	at com.silabs.ss.platform.internal.apack.usb.UsbDetectorLineHandler.handle(UsbDetectorLineHandler.java:1)
+	at com.silabs.ss.platform.api.apack.core.execution.ErrorLoggerLineHandler.handle(Executioner.java:367)
+	at com.silabs.ss.platform.api.apack.core.execution.ErrorLoggerLineHandler.handle(Executioner.java:1)
+	at com.silabs.java.utils.LineParser.parse(LineParser.java:76)
+	at com.silabs.java.utils.LineParser.parse(LineParser.java:62)
+	at com.silabs.ss.platform.api.apack.core.execution.ParserRunnable.run(Executioner.java:329)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:07:45.333
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:48.498
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getLocalStudioMetadataRepoToIu(InstallerUtils.java:650)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.findFeaturesForCapabilities(InstallerUtils.java:777)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.scanFeaturesProvidingMetadata(InstallerUtils.java:468)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getPackageProvidingMetadata(InstallerUtils.java:489)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.loadRemotePackages(PackageService.java:682)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getAllAvailablePackages(PackageService.java:140)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getEarlyAccessIncludedPackages(PackageService.java:360)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.processPreInstallPackages(InstallerUtils.java:2091)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2017)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:07:48.501
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:07:48.518
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getLocalStudioMetadataRepoToIu(InstallerUtils.java:650)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.findFeaturesForCapabilities(InstallerUtils.java:777)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.scanFeaturesProvidingMetadata(InstallerUtils.java:468)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getPackageProvidingMetadata(InstallerUtils.java:489)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.loadRemotePackages(PackageService.java:682)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getAllAvailablePackages(PackageService.java:140)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getEarlyAccessIncludedPackages(PackageService.java:360)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.processPreInstallPackages(InstallerUtils.java:2091)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2017)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:07:48.518
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+
+!ENTRY com.silabs.ss.platform.content.core 4 0 2021-10-28 15:08:10.086
+!MESSAGE No match for asset asset://aem/documents/referenced/studio/sdks_gecko_sdk_suite_v2.5_.studio_demos.xml for key com.silabs.sdk.stack.super:2.5.3./demosFile/0
+
+!ENTRY com.silabs.ss.platform.content.core 4 0 2021-10-28 15:08:10.088
+!MESSAGE No match for asset asset://aem/documents/referenced/studio/slThread_docContent.xml for key com.silabs.sdk.stack.super:2.5.3..com.silabs.sdk.stack.thread:2.9.3.0/docsFile/-1
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.219
+!MESSAGE Unknown board 'BRD4165B' in framework ble
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.222
+!MESSAGE Unknown board 'BRD4171A' in framework ble
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.343
+!MESSAGE Unknown architecture(s) [efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[832]~flash[512k]~temp[g]~package[m]~pins[48]+iar, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[832]~flash[512k]~temp[g]~package[m]~pins[48]+gcc, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[832]~flash[512k]~temp[i]~package[m]~pins[48]+iar, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[832]~flash[512k]~temp[i]~package[m]~pins[48]+gcc, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[932]~flash[512k]~temp[g]~package[m]~pins[48]+iar, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[932]~flash[512k]~temp[g]~package[m]~pins[48]+gcc, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[932]~flash[512k]~temp[i]~package[m]~pins[48]+iar, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[932]~flash[512k]~temp[i]~package[m]~pins[48]+gcc] in framework ble
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.347
+!MESSAGE Unknown board 'BRD4165A' in framework flex
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.347
+!MESSAGE Unknown board 'BRD4165B' in framework flex
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.348
+!MESSAGE Unknown board 'BRD4171A' in framework flex
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.348
+!MESSAGE Unknown board 'BRD4176A' in framework flex
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.351
+!MESSAGE Unknown architecture(s) [EFR32BG13P632F512IM48, EFR32FG13P231F512IM48, EFR32MG13P732F512IM48, EFR32MG13P733F512IM48, EFR32MG13P832F512GM48, EFR32MG13P832F512IM48, EFR32MG13P932F512GM48, EFR32MG13P932F512IM48, EFR32FG14V132F256GM32, EFR32FG14V132F256GM48, RM21Z000F1024IM32] in framework flex
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.358
+!MESSAGE Unknown architecture(s) [EFR32MG13P732F512IM48, EFR32MG13P733F512IM48, EFR32MG13P832F512GM48, EFR32MG13P832F512IM48, EFR32MG13P932F512GM48, EFR32MG13P932F512IM48, RM21Z000F1024IM32] in framework thread
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.362
+!MESSAGE Unknown architecture(s) [EFR32MG13P832F512IM48, RM21Z000F1024IM32] in framework ncp
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:08:14.469
+!MESSAGE Unknown architecture(s) [EFR32MG13P732F512IM48, EFR32MG13P733F512IM48, EFR32MG13P832F512GM48, EFR32MG13P932F512GM48, EFR32MG13P932F512IM48, RM21Z000F1024IM32] in framework afv2
+
+!ENTRY org.eclipse.core.resources 4 77 2021-10-28 15:09:28.059
+!MESSAGE C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2 overlaps the workspace location: C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2
+!SESSION 2021-10-28 15:09:54.072 -----------------------------------------------
+eclipse.buildId=unknown
+java.version=1.8.0_92
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_GB
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -data C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2
+
+!ENTRY com.silabs.ss.platform.apack.core 1 0 2021-10-28 15:09:59.875
+!MESSAGE Ignoring path $(env.STUDIO_PYTHON3_PATH) in Python
+
+!ENTRY com.silabs.ss.platform.apack.core 1 0 2021-10-28 15:09:59.880
+!MESSAGE Ignoring path $(env.STUDIO_PYTHON3_PATH)/bin in Python
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:01.926
+!MESSAGE Invalid discovery key: null
+
+!ENTRY org.eclipse.equinox.ds 2 0 2021-10-28 15:10:12.407
+!MESSAGE Getting a lock required more than 10000 ms. There might be a synchronization problem in this callstack or just the build/dispose process of some components took too long! 
+!STACK 0
+java.lang.Exception: Debug stacktrace
+	at org.eclipse.equinox.internal.ds.InstanceProcess.getLock(InstanceProcess.java:120)
+	at org.eclipse.equinox.internal.ds.InstanceProcess.buildComponent(InstanceProcess.java:560)
+	at org.eclipse.equinox.internal.ds.ServiceReg.getService(ServiceReg.java:53)
+	at org.eclipse.osgi.internal.serviceregistry.ServiceFactoryUse$1.run(ServiceFactoryUse.java:212)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at org.eclipse.osgi.internal.serviceregistry.ServiceFactoryUse.factoryGetService(ServiceFactoryUse.java:210)
+	at org.eclipse.osgi.internal.serviceregistry.ServiceFactoryUse.getService(ServiceFactoryUse.java:111)
+	at org.eclipse.osgi.internal.serviceregistry.ServiceConsumer$2.getService(ServiceConsumer.java:45)
+	at org.eclipse.osgi.internal.serviceregistry.ServiceRegistrationImpl.getService(ServiceRegistrationImpl.java:496)
+	at org.eclipse.osgi.internal.serviceregistry.ServiceRegistry.getService(ServiceRegistry.java:461)
+	at org.eclipse.osgi.internal.framework.BundleContextImpl.getService(BundleContextImpl.java:619)
+	at org.eclipse.equinox.internal.p2.core.ProvisioningAgent.addingService(ProvisioningAgent.java:159)
+	at org.osgi.util.tracker.ServiceTracker$Tracked.customizerAdding(ServiceTracker.java:941)
+	at org.osgi.util.tracker.ServiceTracker$Tracked.customizerAdding(ServiceTracker.java:1)
+	at org.osgi.util.tracker.AbstractTracked.trackAdding(AbstractTracked.java:256)
+	at org.osgi.util.tracker.AbstractTracked.trackInitial(AbstractTracked.java:183)
+	at org.osgi.util.tracker.ServiceTracker.open(ServiceTracker.java:318)
+	at org.osgi.util.tracker.ServiceTracker.open(ServiceTracker.java:261)
+	at org.eclipse.equinox.internal.p2.core.ProvisioningAgent.getService(ProvisioningAgent.java:66)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.getLocalFile(SimpleMetadataRepositoryFactory.java:63)
+	at org.eclipse.equinox.internal.p2.metadata.repository.SimpleMetadataRepositoryFactory.load(SimpleMetadataRepositoryFactory.java:88)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.factoryLoad(MetadataRepositoryManager.java:57)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:768)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:668)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.SLSP2UpdateSites.ensureStudioReposLoaded(SLSP2UpdateSites.java:643)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2005)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:10:12.481
+!MESSAGE Error while updateLicenses from LicenseRetriever, asset reference not found: /C:/SiliconLabs/SimplicityStudio_new/v4/features/org.eclipse.rcp_4.5.1.v20150904-0015/license.html
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:10:12.485
+!MESSAGE Error while updateLicenses from LicenseRetriever, asset reference not found: /C:/SiliconLabs/SimplicityStudio_new/v4/offline/common/Silicon_Labs_VCP_Driver_End_User_License_Agreement/Silicon_Labs_VCP_Driver_End_User_License_Agreement_20170920.html
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:10:12.488
+!MESSAGE Error while updateLicenses from LicenseRetriever, asset reference not found: /C:/SiliconLabs/SimplicityStudio_new/v4/offline/common/Simplicity_Studio_Terms_of_Use_and_Privacy_Statement/Simplicity_Studio_Terms_of_Use_and_Privacy_Statement_20170905.html
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:10:12.491
+!MESSAGE Error while updateLicenses from LicenseRetriever, asset reference not found: /C:/SiliconLabs/SimplicityStudio_new/v4/offline/common/Master_Software_License_Agreement/Master_Software_License_Agreement_20201016.html
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:10:13.815
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.SLSP2UpdateSites.ensureStudioReposLoaded(SLSP2UpdateSites.java:643)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2005)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:10:13.816
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:10:13.843
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.SLSP2UpdateSites.ensureStudioReposLoaded(SLSP2UpdateSites.java:643)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2005)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:10:13.843
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:10:14.982
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getLocalStudioMetadataRepoToIu(InstallerUtils.java:650)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.findFeaturesForCapabilities(InstallerUtils.java:777)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.scanFeaturesProvidingMetadata(InstallerUtils.java:468)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getPackageProvidingMetadata(InstallerUtils.java:489)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.loadRemotePackages(PackageService.java:682)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getAllAvailablePackages(PackageService.java:140)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getAvailablePackages(PackageService.java:175)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.requestPackageTypeInstalled(PackageService.java:568)
+	at com.silabs.ss.platform.api.device.core.DeviceManager.triggerInspectors(DeviceManager.java:361)
+	at com.silabs.ss.platform.api.device.core.DeviceManager.addDevice(DeviceManager.java:322)
+	at com.silabs.ss.platform.api.device.core.detection.DeviceDetectionManager.processDetectionInfo(DeviceDetectionManager.java:206)
+	at com.silabs.ss.platform.api.device.core.detection.DeviceDetectionManager.list(DeviceDetectionManager.java:399)
+	at com.silabs.ss.platform.internal.apack.device.UsbDeviceBridgeListener.list(UsbHotplugNotifier.java:130)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.lambda$7(UsbManager.java:201)
+	at com.silabs.java.utils.ListenerList.fire(ListenerList.java:127)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.parseAction(UsbManager.java:201)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.parseAction(UsbManager.java:1)
+	at com.silabs.java.utils.LineParser$InternalActionListener.parseAction(LineParser.java:93)
+	at com.silabs.ss.platform.internal.apack.usb.UsbDetectorLineHandler.handle(UsbDetectorLineHandler.java:65)
+	at com.silabs.ss.platform.internal.apack.usb.UsbDetectorLineHandler.handle(UsbDetectorLineHandler.java:1)
+	at com.silabs.ss.platform.api.apack.core.execution.ErrorLoggerLineHandler.handle(Executioner.java:367)
+	at com.silabs.ss.platform.api.apack.core.execution.ErrorLoggerLineHandler.handle(Executioner.java:1)
+	at com.silabs.java.utils.LineParser.parse(LineParser.java:76)
+	at com.silabs.java.utils.LineParser.parse(LineParser.java:62)
+	at com.silabs.ss.platform.api.apack.core.execution.ParserRunnable.run(Executioner.java:329)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:10:14.982
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:10:14.999
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getLocalStudioMetadataRepoToIu(InstallerUtils.java:650)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.findFeaturesForCapabilities(InstallerUtils.java:777)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.scanFeaturesProvidingMetadata(InstallerUtils.java:468)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.getPackageProvidingMetadata(InstallerUtils.java:489)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.loadRemotePackages(PackageService.java:682)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getAllAvailablePackages(PackageService.java:140)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.getAvailablePackages(PackageService.java:175)
+	at com.silabs.ss.platform.internal.installer.core.PackageService.requestPackageTypeInstalled(PackageService.java:568)
+	at com.silabs.ss.platform.api.device.core.DeviceManager.triggerInspectors(DeviceManager.java:361)
+	at com.silabs.ss.platform.api.device.core.DeviceManager.addDevice(DeviceManager.java:322)
+	at com.silabs.ss.platform.api.device.core.detection.DeviceDetectionManager.processDetectionInfo(DeviceDetectionManager.java:206)
+	at com.silabs.ss.platform.api.device.core.detection.DeviceDetectionManager.list(DeviceDetectionManager.java:399)
+	at com.silabs.ss.platform.internal.apack.device.UsbDeviceBridgeListener.list(UsbHotplugNotifier.java:130)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.lambda$7(UsbManager.java:201)
+	at com.silabs.java.utils.ListenerList.fire(ListenerList.java:127)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.parseAction(UsbManager.java:201)
+	at com.silabs.ss.platform.api.apack.usb.UsbManager.parseAction(UsbManager.java:1)
+	at com.silabs.java.utils.LineParser$InternalActionListener.parseAction(LineParser.java:93)
+	at com.silabs.ss.platform.internal.apack.usb.UsbDetectorLineHandler.handle(UsbDetectorLineHandler.java:65)
+	at com.silabs.ss.platform.internal.apack.usb.UsbDetectorLineHandler.handle(UsbDetectorLineHandler.java:1)
+	at com.silabs.ss.platform.api.apack.core.execution.ErrorLoggerLineHandler.handle(Executioner.java:367)
+	at com.silabs.ss.platform.api.apack.core.execution.ErrorLoggerLineHandler.handle(Executioner.java:1)
+	at com.silabs.java.utils.LineParser.parse(LineParser.java:76)
+	at com.silabs.java.utils.LineParser.parse(LineParser.java:62)
+	at com.silabs.ss.platform.api.apack.core.execution.ParserRunnable.run(Executioner.java:329)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:10:14.999
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:10:15.201
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.SLSP2UpdateSites.ensureStudioReposLoaded(SLSP2UpdateSites.java:643)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2014)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:10:15.202
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/PrivateGA_sdk_archive.zip!/control/stacks/PrivateGA/updates/.
+
+!ENTRY com.silabs.ss.platform.installer.core 4 0 2021-10-28 15:10:15.223
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+!STACK 1
+org.eclipse.equinox.p2.core.ProvisionException: No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.fail(AbstractRepositoryManager.java:395)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.loadRepository(AbstractRepositoryManager.java:692)
+	at org.eclipse.equinox.internal.p2.repository.helpers.AbstractRepositoryManager.basicRefreshRepository(AbstractRepositoryManager.java:203)
+	at org.eclipse.equinox.internal.p2.metadata.repository.MetadataRepositoryManager.refreshRepository(MetadataRepositoryManager.java:100)
+	at com.silabs.ss.platform.internal.api.installer.core.SLSP2UpdateSites.ensureStudioReposLoaded(SLSP2UpdateSites.java:643)
+	at com.silabs.ss.platform.internal.api.installer.core.InstallerUtils.ensurePackagesFetched(InstallerUtils.java:2014)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.updatePackageMetadata(UpdateManager.java:215)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.ensureUpdatesFetched(UpdateManager.java:286)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager.access$4(UpdateManager.java:277)
+	at com.silabs.ss.platform.internal.installer.core.updates.UpdateManager$1.run(UpdateManager.java:166)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:55)
+!SUBENTRY 1 org.eclipse.equinox.p2.metadata.repository 4 1000 2021-10-28 15:10:15.223
+!MESSAGE No repository found at jar:file:/C:/Users/ShravanthiNadukuda/Downloads/wireless_installer_archive.zip!/updates/.
+
+!ENTRY com.silabs.ss.platform.content.core 4 0 2021-10-28 15:10:30.008
+!MESSAGE No match for asset asset://aem/documents/referenced/studio/sdks_gecko_sdk_suite_v2.5_.studio_demos.xml for key com.silabs.sdk.stack.super:2.5.3./demosFile/0
+
+!ENTRY com.silabs.ss.platform.content.core 4 0 2021-10-28 15:10:30.010
+!MESSAGE No match for asset asset://aem/documents/referenced/studio/slThread_docContent.xml for key com.silabs.sdk.stack.super:2.5.3..com.silabs.sdk.stack.thread:2.9.3.0/docsFile/-1
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.736
+!MESSAGE Unknown board 'BRD4165B' in framework ble
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.737
+!MESSAGE Unknown board 'BRD4171A' in framework ble
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.843
+!MESSAGE Unknown architecture(s) [efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[832]~flash[512k]~temp[g]~package[m]~pins[48]+iar, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[832]~flash[512k]~temp[g]~package[m]~pins[48]+gcc, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[832]~flash[512k]~temp[i]~package[m]~pins[48]+iar, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[832]~flash[512k]~temp[i]~package[m]~pins[48]+gcc, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[932]~flash[512k]~temp[g]~package[m]~pins[48]+iar, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[932]~flash[512k]~temp[g]~package[m]~pins[48]+gcc, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[932]~flash[512k]~temp[i]~package[m]~pins[48]+iar, efr32~family[m]~series[1]~device_configuration[3]~performance[p]~radio[932]~flash[512k]~temp[i]~package[m]~pins[48]+gcc] in framework ble
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.847
+!MESSAGE Unknown board 'BRD4165A' in framework flex
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.848
+!MESSAGE Unknown board 'BRD4165B' in framework flex
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.848
+!MESSAGE Unknown board 'BRD4171A' in framework flex
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.848
+!MESSAGE Unknown board 'BRD4176A' in framework flex
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.852
+!MESSAGE Unknown architecture(s) [EFR32BG13P632F512IM48, EFR32FG13P231F512IM48, EFR32MG13P732F512IM48, EFR32MG13P733F512IM48, EFR32MG13P832F512GM48, EFR32MG13P832F512IM48, EFR32MG13P932F512GM48, EFR32MG13P932F512IM48, EFR32FG14V132F256GM32, EFR32FG14V132F256GM48, RM21Z000F1024IM32] in framework flex
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.857
+!MESSAGE Unknown architecture(s) [EFR32MG13P732F512IM48, EFR32MG13P733F512IM48, EFR32MG13P832F512GM48, EFR32MG13P832F512IM48, EFR32MG13P932F512GM48, EFR32MG13P932F512IM48, RM21Z000F1024IM32] in framework thread
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.859
+!MESSAGE Unknown architecture(s) [EFR32MG13P832F512IM48, RM21Z000F1024IM32] in framework ncp
+
+!ENTRY com.silabs.ss.platform.rcp.core 2 0 2021-10-28 15:10:32.946
+!MESSAGE Unknown architecture(s) [EFR32MG13P732F512IM48, EFR32MG13P733F512IM48, EFR32MG13P832F512GM48, EFR32MG13P932F512GM48, EFR32MG13P932F512IM48, RM21Z000F1024IM32] in framework afv2
+
+!ENTRY org.eclipse.core.resources 4 77 2021-10-28 15:10:48.928
+!MESSAGE C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2 overlaps the workspace location: C:\Users\ShravanthiNadukuda\SimplicityStudio\v4_workspace\AQM-Firmware-V2

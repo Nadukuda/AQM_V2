@@ -51,6 +51,8 @@ void si7021Start(void);
 #define ONE_MS_TICKS 33 //ticks
 uint8_t payload[4];
 extern uint32_t  RTCDRV_TicksToMsec(uint64_t ticks);
+extern void errormessagetimestamp(void);
+extern uint8_t errormessage_payload[9];
 void delay(uint32_t ms)
 {
 	uint32_t ticks = 33*ms;
@@ -82,7 +84,15 @@ void si7021EventHandler(void){
 		//  emberAfAppPrintln("1");
 //		  emberAfAppPrintln("REQUEST");
 		  si7021Setup();
-		  si7021RequestHumidity();
+		  uint8_t error = si7021RequestHumidity();
+		  if(error != 0 ){
+			  errormessage_payload[0]=15; // If Si7021/HTU21D is not responding
+			  errormessagetimestamp();
+			  VMN_payloadPackager(&global_server, &errormessage_payload, 9, DAT, 0x0035); //When ADC1 failed
+			  emberAfAppPrint(" TEMP/HUM SENSOR Not responding & Error code: %d",errormessage_payload[0]);emberAfAppPrintln("");
+			  setNextState(TRANSMIT);
+		  }
+		  else
 		 // delay(20);	//added this to test buffered data 16/09/2021
 		  setNextStateWithDelay(FETCH_MEASUREMENT, 20);  //This was 50 changed to 20 on 05/08/2021
 	  break;
@@ -133,24 +143,40 @@ void si7021EventHandler(void){
 //This function reads the temperature/humidity measurements from the measurement registers for both si7021/HTU21D sensors
 void temp_humidity_measurementfetch(void)
 {
+	uint8_t ret;
 	  si7021Setup();
-	  si7021RequestHumidity();
-	  delay(20);	//added this to test buffered data 16/09/2021
-	  si7021ReadHumidity();
-	  int8_t calculated_humidity = ( (125 * si7021getHumidityData() ) / 65536)-6;
-	  emberAfAppPrint("HUM = %d 		", calculated_humidity);
-	  emberAfAppPrintln("RH RAW Data = %d", si7021getHumidityData());
-	  si7021RequestTemperature();
-	  delay(50); // This is added on 05/08/2021 To work with HTU21D(F) RH/T SENSOR - 50ms delay
-	  si7021ReadTemperature();
-	  float CONST1 = 175.72;
-	  float CONST2 = 46.85;
-	  int8_t calculated_temperature = ((CONST1*si7021getTemperatureData() ) / 65536)-CONST2;
-	  emberAfAppPrint("TEMP = %d 		", calculated_temperature);
-	  emberAfAppPrintln("Temp RAW Data = %d", si7021getTemperatureData());
-	  //here these are previous reading but I have to make a change before packaging for 0x0016 command
-	  setAirHumidity(si7021getHumidityData()); //sending raw data
-	  setAirTemp(si7021getTemperatureData()); //sending raw data
+	  ret = si7021RequestHumidity();
+	  if(ret == 0) { //when transfer is done
+		  delay(20);	//added this to test buffered data 16/09/2021
+		  si7021ReadHumidity();
+		  humidity = si7021getHumidityData();
+		  int8_t calculated_humidity = ( (125 * humidity ) / 65536)-6;
+		  emberAfAppPrint("HUM = %d 		", calculated_humidity);
+		  emberAfAppPrintln("RH RAW Data = %d", humidity);
+		  si7021RequestTemperature();
+		  delay(50); // This is added on 05/08/2021 To work with HTU21D(F) RH/T SENSOR - 50ms delay
+		  si7021ReadTemperature();
+		  temperature = si7021getTemperatureData();
+		  float CONST1 = 175.72;
+		  float CONST2 = 46.85;
+
+		  int8_t calculated_temperature = ((CONST1*temperature ) / 65536)-CONST2;
+		  emberAfAppPrint("TEMP = %d 		", calculated_temperature);
+		  emberAfAppPrintln("Temp RAW Data = %d", temperature);
+		  //here these are previous reading but I have to make a change before packaging for 0x0016 command
+		  setAirHumidity(si7021getHumidityData()); //sending raw data
+		  setAirTemp(si7021getTemperatureData()); //sending raw data
+		/*  if((humidity == 0) && (temperature == 0)) {
+			  errormessage_payload[0]=0x0F; // If Si7021/HTU21D is not responding
+			  errormessagetimestamp();
+			  VMN_payloadPackager(&global_server, &errormessage_payload, 9, DAT, 0x0035); //When ADC1 failed
+			  emberAfAppPrint(" TEMP/HUM SENSOR Not responding & Error code: %d",errormessage_payload[0]);emberAfAppPrintln("");}*/
+	} else {
+		errormessage_payload[0]=15; // If Si7021/HTU21D is not responding
+		errormessagetimestamp();
+		VMN_payloadPackager(&global_server, &errormessage_payload, 9, DAT, 0x0035); //When ADC1 failed
+		emberAfAppPrint(" TEMP/HUM SENSOR Not responding & Error code: %d",errormessage_payload[0]);emberAfAppPrintln("");
+	}
 	  gas_measurement = !gas_measurement;
 }
 
